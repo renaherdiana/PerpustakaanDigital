@@ -1,7 +1,14 @@
+@php
+// Ambil user yang login
+$user = Auth::user();
+$foto = $user && $user->photo ? asset('storage/'.$user->photo) : 'https://i.pravatar.cc/150';
+$nama = $user ? $user->name : 'Petugas';
+$role = $user ? 'Petugas Perpustakaan' : '';
+@endphp
+
 <div class="sidebar">
 
 <style>
-
 /* SIDEBAR */
 .sidebar{
     width:270px;
@@ -73,83 +80,75 @@
 .sidebar-menu .logout{
     color:#e57373;
 }
-
 </style>
-
 
 <!-- PROFILE -->
 <div class="sidebar-profile">
-
-<img src="https://i.pravatar.cc/150">
-
-<h6>Admin</h6>
-<small>Petugas Perpustakaan</small>
-
+    <img src="{{ $foto }}" alt="Profile">
+    <h6>{{ $nama }}</h6>
+    <small>{{ $role }}</small>
 </div>
 
 <hr>
 
 <!-- MENU -->
 <ul class="sidebar-menu">
+    <li>
+        <a href="/admin/dashboard" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+            <span>🏠</span>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/anggota" class="{{ request()->is('admin/anggota') ? 'active' : '' }}">
+            <span>👥</span>
+            <span>Data Anggota</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/databuku" class="{{ request()->is('admin/databuku') ? 'active' : '' }}">
+            <span>📚</span>
+            <span>Data Buku</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/peminjaman" class="{{ request()->is('admin/peminjaman') ? 'active' : '' }}">
+            <span>📖</span>
+            <span>Data Peminjaman</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/pengembalian" class="{{ request()->is('admin/pengembalian') ? 'active' : '' }}">
+            <span>🔄</span>
+            <span>Data Pengembalian</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/denda" class="{{ request()->is('admin/denda') ? 'active' : '' }}">
+            <span>💰</span>
+            <span>Denda</span>
+        </a>
+    </li>
+    <li>
+        <a href="/admin/laporan" class="{{ request()->is('admin/laporan') ? 'active' : '' }}">
+            <span>📊</span>
+            <span>Laporan</span>
+        </a>
+    </li>
 
-<li>
-<a href="/admin/dashboard" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
-<span>🏠</span>
-<span>Dashboard</span>
-</a>
-</li>
+    <hr style="margin:12px 0; opacity:0.2;">
 
-<li>
-<a href="/admin/anggota" class="{{ request()->is('admin/anggota') ? 'active' : '' }}">
-<span>👥</span>
-<span>Data Anggota</span>
-</a>
-</li>
+    <li>
+        <a href="#" class="logout"
+           onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
+           <span>🚪</span>
+           <span>Logout</span>
+        </a>
 
-<li>
-<a href="/admin/databuku" class="{{ request()->is('admin/databuku') ? 'active' : '' }}">
-<span>📚</span>
-<span>Data Buku</span>
-</a>
-</li>
-
-<li>
-<a href="/admin/peminjaman" class="{{ request()->is('admin/peminjaman') ? 'active' : '' }}">
-<span>📖</span>
-<span>Data Peminjaman</span>
-</a>
-</li>
-
-<li>
-<a href="/admin/pengembalian" class="{{ request()->is('admin/pengembalian') ? 'active' : '' }}">
-<span>🔄</span>
-<span>Data Pengembalian</span>
-</a>
-</li>
-
-<li>
-<a href="/admin/denda" class="{{ request()->is('admin/denda') ? 'active' : '' }}">
-<span>💰</span>
-<span>Denda</span>
-</a>
-</li>
-
-<li>
-<a href="/admin/laporan" class="{{ request()->is('admin/laporan') ? 'active' : '' }}">
-<span>📊</span>
-<span>Laporan</span>
-</a>
-</li>
-
-<hr style="margin:12px 0; opacity:0.2;">
-
-<li>
-<a href="/logout" class="logout">
-<span>🚪</span>
-<span>Logout</span>
-</a>
-</li>
-
+        <form id="logout-form-sidebar" action="{{ route('logout') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
+    </li>
 </ul>
 
 </div>

@@ -170,8 +170,9 @@ background:#2397a2;
 type="text" 
 name="nama" 
 class="form-control" 
-placeholder="Isi nama lengkap anda" 
-required>
+value="{{ session('anggota_nama') }}"
+readonly
+style="background:#f5f5f5; cursor:not-allowed;">
 </div>
 
 

@@ -10,155 +10,140 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-
     // ================================
-    // TAMPIL DATA PETUGAS
+    // TAMPIL DATA PETUGAS (index)
     // ================================
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('role','petugas')->latest()->get();
+        $query = User::where('role','petugas');
+
+        // Filter status
+        if ($request->status && in_array($request->status, ['aktif','tidak aktif'])) {
+            $query->where('status', $request->status);
+        }
+
+        // Pencarian nama
+        if ($request->search) {
+            $query->where('name','like',"%{$request->search}%");
+        }
+
+        // Pagination 10 per halaman
+        $users = $query->latest()->paginate(10)->withQueryString();
 
         return view('page.backend.superadmin.datauser.index', compact('users'));
     }
 
-
     // ================================
-    // FORM TAMBAH PETUGAS
+    // FORM TAMBAH PETUGAS (create)
     // ================================
     public function create()
     {
         return view('page.backend.superadmin.datauser.create');
     }
 
-
     // ================================
-    // SIMPAN PETUGAS
+    // SIMPAN PETUGAS (store)
     // ================================
     public function store(Request $request)
     {
-
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required',
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email',
+            'phone'    => 'required',
             'password' => 'required|min:6',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'photo'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-
-        //UPLOAD PHOTO
         $photo = null;
-
-        if($request->hasFile('photo')){
+        if ($request->hasFile('photo')) {
             $photo = $request->file('photo')->store('foto_user','public');
         }
 
-
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'phone'    => $request->phone,
             'password' => Hash::make($request->password),
-            'role' => 'petugas',
-            'status' => 'aktif',
-            'photo' => $photo
+            'role'     => 'petugas',
+            'status'   => 'aktif',
+            'photo'    => $photo
         ]);
 
-
         return redirect()->route('superadmin.datauser.index')
-        ->with('success','Petugas berhasil ditambahkan');
+                         ->with('success','Petugas berhasil ditambahkan');
     }
 
-
     // ================================
-    // DETAIL PETUGAS
+    // DETAIL PETUGAS (show)
     // ================================
     public function show($id)
     {
         $user = User::findOrFail($id);
-
         return view('page.backend.superadmin.datauser.show', compact('user'));
     }
 
-
     // ================================
-    // FORM EDIT
+    // FORM EDIT PETUGAS (edit)
     // ================================
     public function edit($id)
     {
         $user = User::findOrFail($id);
-
         return view('page.backend.superadmin.datauser.edit', compact('user'));
     }
 
-
     // ================================
-    // UPDATE PETUGAS
+    // UPDATE PETUGAS (update)
     // ================================
     public function update(Request $request, $id)
     {
-
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
+            'name'  => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'phone' => 'required',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-
-        //UPLOAD PHOTO BARU
-        if($request->hasFile('photo')){
-
-            if($user->photo){
+        // Upload photo baru jika ada
+        if ($request->hasFile('photo')) {
+            if ($user->photo) {
                 Storage::disk('public')->delete($user->photo);
             }
-
-            $photo = $request->file('photo')->store('foto_user','public');
-
-            $user->photo = $photo;
+            $user->photo = $request->file('photo')->store('foto_user','public');
         }
 
-
-        //UPDATE PASSWORD JIKA DIISI
-        if($request->password){
+        // Update password jika diisi
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
 
-
+        // Update data lain
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
+            'name'   => $request->name,
+            'email'  => $request->email,
+            'phone'  => $request->phone,
             'status' => $request->status
         ]);
 
-
         return redirect()->route('superadmin.datauser.index')
-        ->with('success','Data petugas berhasil diupdate');
+                         ->with('success','Data petugas berhasil diupdate');
     }
 
-
     // ================================
-    // HAPUS PETUGAS
+    // HAPUS PETUGAS (destroy)
     // ================================
     public function destroy($id)
     {
-
         $user = User::findOrFail($id);
 
-
-        //HAPUS PHOTO
-        if($user->photo){
+        if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
         }
 
         $user->delete();
 
-
         return redirect()->route('superadmin.datauser.index')
-        ->with('success','Petugas berhasil dihapus');
+                         ->with('success','Petugas berhasil dihapus');
     }
-
 }

@@ -177,11 +177,11 @@
         <div class="table-responsive">
 
             <table class="table align-middle" id="anggotaTable">
-                <thead>
+               <thead>
                     <tr>
                         <th>No</th>
                         <th>Nama</th>
-                        <th>NIS</th>
+                        <th>Email</th> <!-- ganti NIS jadi Email -->
                         <th>Kelas</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -193,7 +193,7 @@
                     <tr data-status="{{ $item->status }}">
                         <td>{{ $loop->iteration + ($anggota->currentPage()-1) * $anggota->perPage() }}</td>
                         <td>{{ $item->nama }}</td>
-                        <td>{{ $item->nis }}</td>
+                        <td>{{ $item->email }}</td> <!-- tampilkan email -->
                         <td>{{ $item->kelas }}</td>
                         <td>
                             @if($item->status == 'aktif')
@@ -205,8 +205,8 @@
                         <td>
                             <div class="action-icons">
                                 <a href="{{ route('admin.anggota.edit',$item->id) }}" 
-                                   class="icon-btn icon-edit" title="Edit">
-                                   <i class="bi bi-pencil"></i>
+                                class="icon-btn icon-edit" title="Edit">
+                                <i class="bi bi-pencil"></i>
                                 </a>
 
                                 <form action="{{ route('admin.anggota.destroy',$item->id) }}" method="POST">
@@ -219,20 +219,20 @@
                                 </form>
 
                                 <a href="{{ route('admin.anggota.show',$item->id) }}" 
-                                   class="icon-btn icon-show" title="Detail">
-                                   <i class="bi bi-eye"></i>
+                                class="icon-btn icon-show" title="Detail">
+                                <i class="bi bi-eye"></i>
                                 </a>
                             </div>
                         </td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            Data Anggota Belum Ada
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        Data Anggota Belum Ada
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
 
             </table>
 

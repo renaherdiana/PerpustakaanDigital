@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('nis')->unique();
+            $table->string('email')->unique(); // tambahkan email
             $table->string('kelas');
-            $table->string('password');
+            $table->string('password'); // password harus di-hash saat input
             $table->enum('status',['aktif','tidak_aktif'])->default('aktif');
             $table->timestamps();
         });

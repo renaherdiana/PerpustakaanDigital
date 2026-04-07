@@ -37,9 +37,16 @@ margin-bottom:6px;
 </style>
 
 
+@php
+    $user = Auth::guard('web')->check() ? Auth::guard('web')->user() 
+          : (Auth::guard('anggota')->check() ? Auth::guard('anggota')->user() : null);
+
+    $nama = $user ? $user->name ?? $user->nama : 'Guest';
+@endphp
+
 <div class="header mb-4">
-<h4 class="gradient-text">Hallo Rena Herdiana 👋</h4>
-<p class="text-muted">Selamat Datang di Sistem Perpustakaan Digital</p>
+    <h4 class="gradient-text">Hallo {{ $nama }} 👋</h4>
+    <p class="text-muted">Selamat Datang di Sistem Perpustakaan Digital</p>
 </div>
 
 

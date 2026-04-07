@@ -3,243 +3,248 @@
 @section('content')
 
 <style>
-
-/* PAGE TITLE */
-.page-title{
-font-weight:700;
-font-size:20px;
-margin-bottom:25px;
-color:#3b3b3b;
+/* ===== PAGE TITLE ===== */
+.page-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 25px;
+    color: #1e293b;
 }
 
-/* CARD */
-.card-custom{
-border:none;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.05);
-padding:20px;
+/* ===== CARD ===== */
+.card-custom {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    padding: 20px;
 }
 
-/* FILTER AREA */
-.filter-area{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
+/* ===== FILTER AREA ===== */
+.filter-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-/* ADD BUTTON */
-.btn-add{
-background:linear-gradient(135deg,#7c6cf3,#9f8cff);
-color:white;
-border:none;
-border-radius:12px;
-padding:8px 18px;
-font-weight:500;
-text-decoration:none;
+.filter-area .form-select,
+.filter-area .form-control {
+    border-radius: 12px;
+    padding: 6px 12px;
 }
 
-/* TABLE */
-.table thead{
-background:#f8f8fb;
+/* ===== ADD BUTTON ===== */
+.btn-add {
+    background: linear-gradient(135deg,#7c6cf3,#9f8cff);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 18px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: 0.3s;
 }
 
-.table th{
-font-weight:600;
-color:#555;
+.btn-add:hover {
+    opacity: 0.9;
 }
 
-.table td{
-vertical-align:middle;
+/* ===== TABLE ===== */
+.table thead {
+    background: #f8f8fb;
 }
 
-/* PHOTO */
-.user-photo{
-width:45px;
-height:45px;
-border-radius:50%;
-object-fit:cover;
-border:2px solid #f1f1ff;
+.table th {
+    font-weight: 600;
+    color: #555;
 }
 
-/* STATUS */
-.badge{
-padding:6px 12px;
-border-radius:20px;
-font-size:12px;
+.table td {
+    vertical-align: middle;
 }
 
-.badge-active{
-background:#d1fae5;
-color:#065f46;
+/* ===== PHOTO ===== */
+.user-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f1f1ff;
 }
 
-.badge-inactive{
-background:#fee2e2;
-color:#991b1b;
+/* ===== STATUS BADGE ===== */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
 }
 
-/* ACTION ICONS */
-.action-icons{
-display:flex;
-gap:8px;
+.badge-active {
+    background: #d1fae5;
+    color: #065f46;
 }
 
-/* ICON BUTTON */
-.icon-btn{
-width:34px;
-height:34px;
-border-radius:10px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:16px;
-border:none;
-cursor:pointer;
-text-decoration:none;
-transition:0.2s;
+.badge-inactive {
+    background: #fee2e2;
+    color: #991b1b;
 }
 
-/* EDIT */
-.icon-edit{
-background:#eef2ff;
-color:#4f46e5;
+/* ===== ACTION ICONS ===== */
+.action-icons {
+    display: flex;
+    gap: 8px;
 }
 
-.icon-edit:hover{
-background:#4f46e5;
-color:white;
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* DELETE */
-.icon-delete{
-background:#fee2e2;
-color:#dc2626;
+/* Edit */
+.icon-edit {
+    background: #eef2ff;
+    color: #4f46e5;
 }
 
-.icon-delete:hover{
-background:#dc2626;
-color:white;
+.icon-edit:hover {
+    background: #4f46e5;
+    color: white;
 }
 
-/* DETAIL */
-.icon-show{
-background:#ecfdf5;
-color:#059669;
+/* Delete */
+.icon-delete {
+    background: #fee2e2;
+    color: #dc2626;
 }
 
-.icon-show:hover{
-background:#059669;
-color:white;
+.icon-delete:hover {
+    background: #dc2626;
+    color: white;
 }
 
+/* Detail */
+.icon-show {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.icon-show:hover {
+    background: #059669;
+    color: white;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .filter-area {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
 </style>
 
-
 <div class="card card-custom">
-<div class="card-body">
+    <div class="card-body">
 
-<h5 class="page-title">Kelola Data Petugas</h5>
+        <h5 class="page-title">Kelola Data Petugas</h5>
 
-<!-- BUTTON TAMBAH -->
-<div class="filter-area">
+        <!-- FILTER & SEARCH -->
+        <form method="GET" class="filter-area">
 
-<div></div>
+            <input type="text" name="search" placeholder="Cari Nama..." value="{{ request('search') }}" class="form-control" style="width:200px;">
 
-<a href="{{ route('superadmin.datauser.create') }}" class="btn-add">
-+ Tambah Petugas
-</a>
+            <select name="status" class="form-select" style="width:150px;">
+                <option value="">Semua Status</option>
+                <option value="aktif" {{ request('status')=='aktif' ? 'selected' : '' }}>Aktif</option>
+                <option value="tidak aktif" {{ request('status')=='tidak aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+            </select>
 
-</div>
+            <button type="submit" class="btn btn-primary">Filter</button>
 
-<!-- TABLE -->
-<div class="table-responsive">
+            <div class="ms-auto">
+                <a href="{{ route('superadmin.datauser.create') }}" class="btn-add">
+                    + Tambah Petugas
+                </a>
+            </div>
 
-<table class="table align-middle">
+        </form>
 
-<thead>
-<tr>
-<th>No</th>
-<th>Photo</th>
-<th>Nama Petugas</th>
-<th>No Telephone</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</thead>
+        <!-- TABLE -->
+        <div class="table-responsive mt-3">
+            <table class="table align-middle table-hover">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Photo</th>
+                        <th>Nama Petugas</th>
+                        <th>No Telephone</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($users as $key => $user)
+                    <tr>
+                        <td>{{ $users->firstItem() + $key }}</td>
+                        <td>
+                            @if($user->photo)
+                                <img src="{{ asset('storage/'.$user->photo) }}" class="user-photo">
+                            @else
+                                <img src="https://i.pravatar.cc/45?img={{ $key+1 }}" class="user-photo">
+                            @endif
+                        </td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->phone }}</td>
+                        <td>
+                            <span class="badge {{ $user->status == 'aktif' ? 'badge-active' : 'badge-inactive' }}">
+                                {{ $user->status == 'tidak_aktif' ? 'Tidak Aktif' : ucfirst($user->status) }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-icons">
+                                <a href="{{ route('superadmin.datauser.edit',$user->id) }}" class="icon-btn icon-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
 
-<tbody>
+                                <form action="{{ route('superadmin.datauser.destroy',$user->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="icon-btn icon-delete" title="Hapus" onclick="return confirm('Yakin hapus petugas?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
 
-@forelse ($users as $key => $user)
+                                <a href="{{ route('superadmin.datauser.show',$user->id) }}" class="icon-btn icon-show" title="Detail">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center">Data Petugas Belum Ada</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
 
-<tr>
+            <!-- PAGINATION -->
+            <div class="mt-3 d-flex justify-content-end">
+                {{ $users->links() }}
+            </div>
+        </div>
 
-<td>{{ $key + 1 }}</td>
-
-<td>
-@if($user->photo)
-<img src="{{ asset('storage/'.$user->photo) }}" class="user-photo">
-@else
-<img src="https://i.pravatar.cc/45?img={{ $key+1 }}" class="user-photo">
-@endif
-</td>
-
-<td>{{ $user->name }}</td>
-
-<td>{{ $user->phone }}</td>
-
-<td>
-@if($user->status == 'aktif')
-<span class="badge badge-active">Aktif</span>
-@else
-<span class="badge badge-inactive">Tidak Aktif</span>
-@endif
-</td>
-
-<td>
-
-<div class="action-icons">
-
-<a href="{{ route('superadmin.datauser.edit',$user->id) }}" class="icon-btn icon-edit" title="Edit">
-<i class="bi bi-pencil"></i>
-</a>
-
-<form action="{{ route('superadmin.datauser.destroy',$user->id) }}" method="POST">
-@csrf
-@method('DELETE')
-
-<button class="icon-btn icon-delete" title="Hapus"
-onclick="return confirm('Yakin hapus petugas?')">
-<i class="bi bi-trash"></i>
-</button>
-
-</form>
-
-<a href="{{ route('superadmin.datauser.show',$user->id) }}" class="icon-btn icon-show" title="Detail">
-<i class="bi bi-eye"></i>
-</a>
-
-</div>
-
-</td>
-
-</tr>
-
-@empty
-
-<tr>
-<td colspan="6" class="text-center">Data Petugas Belum Ada</td>
-</tr>
-
-@endforelse
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
+    </div>
 </div>
 
 @endsection
