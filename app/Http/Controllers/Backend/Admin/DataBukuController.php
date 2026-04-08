@@ -12,7 +12,7 @@ class DataBukuController extends Controller
 
     public function index()
     {
-        $bukus = Buku::latest()->get();
+        $bukus = Buku::latest()->paginate(5);
 
         return view('page.backend.admin.databuku.index', compact('bukus'));
     }

@@ -100,7 +100,7 @@
 </li>
 
 <li>
-<a href="/admin/dataanggota" class="{{ request()->is('admin/dataanggota') ? 'active' : '' }}">
+<a href="/admin/anggota" class="{{ request()->is('admin/anggota') ? 'active' : '' }}">
 <span>👥</span>
 <span>Data Anggota</span>
 </a>

@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-
 /* HEADER */
 .header-page{
 background:#4a4e69;
@@ -112,25 +111,18 @@ transition:0.2s;
 .btn-back:hover{
 background:#3a3d56;
 }
-
 </style>
-
 
 <div class="header-page">
 <h2>Detail Denda</h2>
 <p>Informasi lengkap denda keterlambatan</p>
 </div>
 
-
 <div class="container">
-
 <div class="detail-card">
-
 <div class="detail-layout">
 
-
 <div class="book-area">
-
 @if(optional($denda->peminjaman->buku)->photo)
 <img src="{{ asset('storage/'.$denda->peminjaman->buku->photo) }}" class="book-photo">
 @else
@@ -140,16 +132,16 @@ background:#3a3d56;
 <div class="book-title">
 {{ optional($denda->peminjaman->buku)->judul ?? 'Buku Tidak Ditemukan' }}
 </div>
-
 </div>
-
 
 <div class="book-info">
 
 @php
-$jumlah = $denda->hari_terlambat * 1000;
+$jumlahBuku = $denda->peminjaman->jumlah ?? 1;
+$hariTerlambat = $denda->hari_terlambat ?? 0;
+$dendaPerBukuPerHari = 1000;
+$totalDenda = $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
 @endphp
-
 
 <div class="info-item">
 <span class="info-label">Penulis</span>
@@ -168,54 +160,49 @@ $jumlah = $denda->hari_terlambat * 1000;
 
 <div class="info-item">
 <span class="info-label">Tanggal Kembali</span>
-<span class="info-value">{{ $denda->peminjaman->tgl_kembali }}</span>
+<span class="info-value">{{ \Carbon\Carbon::parse($denda->peminjaman->tgl_kembali)->format('d M Y') }}</span>
+</div>
+
+<div class="info-item">
+<span class="info-label">Jumlah Buku</span>
+<span class="info-value">{{ $jumlahBuku }}</span>
 </div>
 
 <div class="info-item">
 <span class="info-label">Hari Terlambat</span>
-<span class="info-value">{{ $denda->hari_terlambat }} Hari</span>
+<span class="info-value">{{ $hariTerlambat }} Hari</span>
 </div>
 
 <div class="info-item">
 <span class="info-label">Jumlah Denda</span>
 <span class="info-value">
-Rp {{ number_format($jumlah,0,',','.') }}
+Rp {{ number_format($totalDenda,0,',','.') }}
 </span>
 </div>
 
 <div class="info-item">
 <span class="info-label">Status Pembayaran</span>
-
 @if($denda->status == 'selesai')
 <span class="status status-lunas">Lunas</span>
 @else
 <span class="status status-belum">Belum Dibayar</span>
 @endif
-
 </div>
-
 
 {{-- INFO PEMBAYARAN CASH --}}
 @if($denda->status != 'selesai')
-
 <div class="info-bayar">
 Silakan melakukan pembayaran denda secara <b>CASH</b> di perpustakaan kepada petugas/admin.
 </div>
-
 @endif
-
 
 <a href="{{ route('frontend.denda') }}" class="btn-back">
 ← Kembali ke Denda
 </a>
 
 </div>
-
-
 </div>
-
 </div>
-
 </div>
 
 @endsection

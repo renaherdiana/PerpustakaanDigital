@@ -108,12 +108,6 @@ backdrop-filter:blur(6px);
 justify-content:center;
 align-items:center;
 z-index:999;
-animation:fadeBg 0.3s ease;
-}
-
-@keyframes fadeBg{
-from{opacity:0;}
-to{opacity:1;}
 }
 
 .notif-box{
@@ -124,18 +118,6 @@ border-radius:16px;
 width:360px;
 text-align:center;
 box-shadow:0 15px 40px rgba(0,0,0,0.25);
-animation:popup 0.35s ease;
-}
-
-@keyframes popup{
-from{
-transform:translateY(25px) scale(0.95);
-opacity:0;
-}
-to{
-transform:translateY(0) scale(1);
-opacity:1;
-}
 }
 
 /* ICON */
@@ -155,20 +137,20 @@ padding:10px 28px;
 border-radius:10px;
 color:white;
 cursor:pointer;
-transition:0.25s;
 }
 
 .btn-ok:hover{
 background:#2397a2;
-transform:scale(1.05);
 }
 
 </style>
+
 
 <div class="banner">
 <h2>Katalog Buku</h2>
 <small>Home / Katalog Buku / Peminjaman</small>
 </div>
+
 
 <div class="katalog-container">
 
@@ -192,15 +174,38 @@ placeholder="Isi nama lengkap anda"
 required>
 </div>
 
+
 <div class="form-group">
 <label>Judul Buku</label>
 <input 
 type="text" 
-name="judul_buku" 
 class="form-control" 
 value="{{ $buku->judul }}" 
 readonly>
 </div>
+
+
+<div class="form-group">
+<label>Stok Buku</label>
+<input 
+type="text" 
+class="form-control" 
+value="{{ $buku->stok }}" 
+readonly>
+</div>
+
+
+<div class="form-group">
+<label>Jumlah Pinjam</label>
+<input 
+type="number" 
+name="jumlah" 
+class="form-control" 
+min="1"
+max="{{ $buku->stok }}"
+required>
+</div>
+
 
 <div class="row">
 
@@ -213,6 +218,7 @@ class="form-control"
 required>
 </div>
 
+
 <div class="form-group" style="flex:1;">
 <label>Tanggal Kembali</label>
 <input 
@@ -224,6 +230,7 @@ required>
 
 </div>
 
+
 <button type="submit" class="btn-ajukan">
 Ajukan Peminjaman
 </button>
@@ -233,6 +240,7 @@ Ajukan Peminjaman
 </div>
 
 </div>
+
 
 @if(session('success'))
 
@@ -259,6 +267,7 @@ Cek status pada menu <b>Peminjaman Saya</b>.
 </div>
 
 @endif
+
 
 <script>
 

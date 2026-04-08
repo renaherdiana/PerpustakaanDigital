@@ -14,6 +14,7 @@ class Peminjaman extends Model
     protected $fillable = [
         'buku_id',
         'nama_anggota',
+        'jumlah',
         'tgl_pinjam',
         'tgl_kembali',
         'status'
@@ -32,5 +33,10 @@ class Peminjaman extends Model
     public function denda()
     {
         return $this->hasOne(Denda::class);
+    }
+
+    public function anggota()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

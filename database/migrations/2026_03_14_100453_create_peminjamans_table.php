@@ -18,12 +18,15 @@ return new class extends Migration
             // DATA ANGGOTA
             $table->string('nama_anggota');
 
+            // JUMLAH BUKU YANG DIPINJAM
+            $table->integer('jumlah')->default(1);
+
             // TANGGAL PINJAM
             $table->date('tgl_pinjam');
             $table->date('tgl_kembali');
 
             // STATUS PEMINJAMAN
-            $table->enum('status',[
+            $table->enum('status', [
                 'menunggu',
                 'dipinjam',
                 'terlambat',

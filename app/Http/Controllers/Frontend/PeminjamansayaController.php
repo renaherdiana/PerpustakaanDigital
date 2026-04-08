@@ -24,29 +24,51 @@ class PeminjamansayaController extends Controller
             'status' => 'terlambat'
         ]);
 
-        // QUERY AWAL
+
+        // QUERY PEMINJAMAN + RELASI BUKU
         $query = Peminjaman::with('buku');
 
-        // SEARCH JUDUL BUKU
-        if($request->filled('search')){
+
+        /* ===============================
+           SEARCH JUDUL BUKU
+        =============================== */
+
+        if($request->search){
+
             $query->whereHas('buku', function($q) use ($request){
+
                 $q->where('judul','like','%'.$request->search.'%');
+
             });
+
         }
 
-        // FILTER STATUS
-        if($request->filled('status')){
+
+        /* ===============================
+           FILTER STATUS
+        =============================== */
+
+        if($request->status){
+
             $query->where('status',$request->status);
+
         }
 
-        // AMBIL DATA
+
+        /* ===============================
+           AMBIL DATA
+        =============================== */
+
         $peminjamans = $query
-            ->latest()
-            ->paginate(5);
+                        ->orderBy('created_at','desc')
+                        ->paginate(5)
+                        ->withQueryString();
 
-        $peminjamans->appends($request->all());
 
-        return view('page.frontend.peminjamansaya.index', compact('peminjamans'));
+        return view(
+            'page.frontend.peminjamansaya.index',
+            compact('peminjamans')
+        );
 
     }
 
@@ -61,8 +83,20 @@ class PeminjamansayaController extends Controller
 
         $peminjaman = Peminjaman::with('buku')->findOrFail($id);
 
-        return view('page.frontend.peminjamansaya.show', compact('peminjaman'));
+        return view(
+            'page.frontend.peminjamansaya.show',
+            compact('peminjaman')
+        );
 
+    }
+
+    // Contoh di Controller
+    public function ajukanPengembalian(Request $request){
+        $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
+        $peminjaman->status = 'menunggu_verifikasi';
+        $peminjaman->save();
+
+        return redirect()->back()->with('success', 'Buku berhasil diajukan untuk pengembalian!');
     }
 
 }

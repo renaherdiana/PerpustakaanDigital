@@ -5,283 +5,273 @@
 <style>
 
 .page-title{
-font-weight:700;
-font-size:20px;
-margin-bottom:25px;
-color:#3b3b3b;
+    font-weight:700;
+    font-size:20px;
+    margin-bottom:25px;
+    color:#3b3b3b;
 }
 
 .card-custom{
-border:none;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,0.05);
-padding:20px;
+    border:none;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.05);
+    padding:20px;
 }
 
 /* FILTER */
 .filter-area{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
 .filter-left{
-display:flex;
-gap:15px;
+    display:flex;
+    gap:15px;
 }
 
 .filter-left input{
-min-width:250px;
-padding:8px 12px;
-border-radius:10px;
-border:1px solid #e0e0e0;
-font-size:14px;
+    min-width:250px;
+    padding:8px 12px;
+    border-radius:10px;
+    border:1px solid #e0e0e0;
+    font-size:14px;
 }
 
 .filter-left select{
-padding:8px 12px;
-border-radius:10px;
-border:1px solid #e0e0e0;
-font-size:14px;
+    padding:8px 12px;
+    border-radius:10px;
+    border:1px solid #e0e0e0;
+    font-size:14px;
 }
 
 /* TABLE */
 .table thead{
-background:#f8f8fb;
+    background:#f8f8fb;
 }
 
 .table th{
-font-weight:600;
-color:#555;
+    font-weight:600;
+    color:#555;
 }
 
 .table td{
-vertical-align:middle;
+    vertical-align:middle;
 }
 
-/* PHOTO */
-.user-photo{
-width:45px;
-height:45px;
-border-radius:50%;
-object-fit:cover;
-border:2px solid #f1f1ff;
-}
-
-/* BADGE */
+/* BADGE STATUS */
 .badge{
-padding:6px 12px;
-border-radius:20px;
-font-size:12px;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
 }
 
 .badge-active{
-background:#d1fae5;
-color:#065f46;
+    background:#d1fae5;
+    color:#065f46;
 }
 
 .badge-inactive{
-background:#fee2e2;
-color:#991b1b;
+    background:#fee2e2;
+    color:#991b1b;
 }
 
-.badge-pending{
-background:#fef3c7;
-color:#92400e;
+/* BUTTON TAMBAH */
+.btn-add{
+    background:#4f7cff;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    font-size:14px;
+    font-weight:600;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
 }
 
-/* ACTION BUTTON */
-.btn-action{
-border:none;
-border-radius:8px;
-font-size:12px;
-padding:6px 10px;
-display:inline-flex;
-align-items:center;
-gap:4px;
+.btn-add:hover{
+    background:#3f6df0;
 }
 
-/* soft colors */
-.btn-edit{
-background:#e0e7ff;
-color:#3730a3;
+/* ACTION ICONS */
+.action-icons{
+    display:flex;
+    gap:8px;
 }
 
-.btn-delete{
-background:#fee2e2;
-color:#b91c1c;
+.icon-btn{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    transition:0.2s;
 }
 
-.btn-show{
-background:#f1f5f9;
-color:#334155;
+/* EDIT */
+.icon-edit{
+    background:#eef2ff;
+    color:#4f46e5;
 }
 
-.btn-verify{
-background:#dcfce7;
-color:#166534;
+.icon-edit:hover{
+    background:#4f46e5;
+    color:white;
+}
+
+/* DELETE */
+.icon-delete{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.icon-delete:hover{
+    background:#dc2626;
+    color:white;
+}
+
+/* DETAIL */
+.icon-show{
+    background:#ecfdf5;
+    color:#059669;
+}
+
+.icon-show:hover{
+    background:#059669;
+    color:white;
 }
 
 </style>
 
 <div class="card card-custom">
-<div class="card-body">
+    <div class="card-body">
 
-<h5 class="page-title">Kelola Data Anggota</h5>
+        <h5 class="page-title">Kelola Data Anggota</h5>
 
-<!-- SEARCH + FILTER -->
-<div class="filter-area">
+        <div class="filter-area">
 
-<div class="filter-left">
+            <div class="filter-left">
+                <input type="text" id="searchInput" placeholder="Cari Nama Anggota...">
 
-<input type="text" id="searchInput" placeholder="Cari Anggota...">
+                <select id="statusFilter">
+                    <option value="">Semua Status</option>
+                    <option value="aktif">Aktif</option>
+                    <option value="tidak_aktif">Tidak Aktif</option>
+                </select>
+            </div>
 
-<select id="kelasFilter">
-<option value="">Semua Kelas</option>
-<option>XI RPL 1</option>
-<option>X TKJ 2</option>
-<option>X RPL 1</option>
-</select>
+            <a href="{{ route('admin.anggota.create') }}" class="btn-add">
+                <i class="bi bi-plus-lg"></i> Tambah Anggota
+            </a>
 
-</div>
+        </div>
 
-</div>
+        <div class="table-responsive">
 
-<div class="table-responsive">
+            <table class="table align-middle" id="anggotaTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-<table class="table align-middle" id="anggotaTable">
+                <tbody>
+                    @forelse($anggota as $item)
+                    <tr data-status="{{ $item->status }}">
+                        <td>{{ $loop->iteration + ($anggota->currentPage()-1) * $anggota->perPage() }}</td>
+                        <td>{{ $item->nama }}</td>
+                        <td>{{ $item->nis }}</td>
+                        <td>{{ $item->kelas }}</td>
+                        <td>
+                            @if($item->status == 'aktif')
+                                <span class="badge badge-active">Aktif</span>
+                            @else
+                                <span class="badge badge-inactive">Tidak Aktif</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="action-icons">
+                                <a href="{{ route('admin.anggota.edit',$item->id) }}" 
+                                   class="icon-btn icon-edit" title="Edit">
+                                   <i class="bi bi-pencil"></i>
+                                </a>
 
-<thead>
-<tr>
-<th>No</th>
-<th>Photo</th>
-<th>Nama</th>
-<th>Kelas</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</thead>
+                                <form action="{{ route('admin.anggota.destroy',$item->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="icon-btn icon-delete"
+                                        onclick="return confirm('Yakin hapus anggota?')" title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
 
-<tbody>
+                                <a href="{{ route('admin.anggota.show',$item->id) }}" 
+                                   class="icon-btn icon-show" title="Detail">
+                                   <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Data Anggota Belum Ada
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
 
-<tr>
-<td>1</td>
-<td><img src="https://i.pravatar.cc/40" class="user-photo"></td>
-<td>Rena Herdiana</td>
-<td>XI RPL 1</td>
-<td class="status">
-<span class="badge badge-active">Aktif</span>
-</td>
-<td>
-<button class="btn-action btn-edit">✏️ Edit</button>
-<button class="btn-action btn-delete">🗑 Delete</button>
-<button class="btn-action btn-show">👁 Show</button>
-</td>
-</tr>
+            </table>
 
-<tr>
-<td>2</td>
-<td><img src="https://i.pravatar.cc/41" class="user-photo"></td>
-<td>Virda Ainun</td>
-<td>X TKJ 2</td>
-<td class="status">
-<span class="badge badge-inactive">Tidak Aktif</span>
-</td>
-<td>
-<button class="btn-action btn-edit">✏️ Edit</button>
-<button class="btn-action btn-delete">🗑 Delete</button>
-<button class="btn-action btn-show">👁 Show</button>
-</td>
-</tr>
+            <!-- PAGINATION -->
+            <div class="d-flex justify-content-end mt-3">
+                {{ $anggota->links('pagination::bootstrap-5') }}
+            </div>
 
-<tr>
-<td>3</td>
-<td><img src="https://i.pravatar.cc/42" class="user-photo"></td>
-<td>Aldi Saputra</td>
-<td>X RPL 1</td>
-<td class="status">
-<span class="badge badge-pending">Pending</span>
-</td>
-<td class="action">
-<button class="btn-action btn-verify verifyBtn">✔ Verifikasi</button>
-</td>
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-</div>
+        </div>
+    </div>
 </div>
 
 <script>
-
-/* =========================
-VERIFIKASI STATUS
-========================= */
-
-const verifyButtons = document.querySelectorAll(".verifyBtn");
-
-verifyButtons.forEach(function(button){
-
-button.addEventListener("click",function(){
-
-const row = this.closest("tr");
-
-const statusCell = row.querySelector(".status");
-
-const actionCell = row.querySelector(".action");
-
-statusCell.innerHTML = '<span class="badge badge-active">Aktif</span>';
-
-actionCell.innerHTML = `
-<button class="btn-action btn-edit">✏️ Edit</button>
-<button class="btn-action btn-delete">🗑 Delete</button>
-<button class="btn-action btn-show">👁 Show</button>
-`;
-
-});
-
-});
-
-
-/* =========================
-SEARCH + FILTER
-========================= */
-
 const searchInput = document.getElementById("searchInput");
-const kelasFilter = document.getElementById("kelasFilter");
+const statusFilter = document.getElementById("statusFilter");
 const table = document.getElementById("anggotaTable");
 const rows = table.getElementsByTagName("tr");
 
 function filterTable(){
+    const searchValue = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value;
 
-const searchValue = searchInput.value.toLowerCase();
-const kelasValue = kelasFilter.value.toLowerCase();
+    for(let i=1;i<rows.length;i++){
+        const nama = rows[i].cells[1]?.textContent.toLowerCase() || '';
+        const status = rows[i].dataset.status;
 
-for(let i=1;i<rows.length;i++){
+        const matchSearch = nama.includes(searchValue);
+        const matchStatus = statusValue === "" || status === statusValue;
 
-const nama = rows[i].cells[2].textContent.toLowerCase();
-const kelas = rows[i].cells[3].textContent.toLowerCase();
-
-const matchSearch = nama.includes(searchValue);
-const matchKelas = kelasValue === "" || kelas.includes(kelasValue);
-
-if(matchSearch && matchKelas){
-rows[i].style.display="";
-}else{
-rows[i].style.display="none";
-}
-
-}
-
+        if(matchSearch && matchStatus){
+            rows[i].style.display="";
+        }else{
+            rows[i].style.display="none";
+        }
+    }
 }
 
 searchInput.addEventListener("keyup",filterTable);
-kelasFilter.addEventListener("change",filterTable);
-
+statusFilter.addEventListener("change",filterTable);
 </script>
 
 @endsection

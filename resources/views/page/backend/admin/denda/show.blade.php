@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-
 /* HEADER */
 .header-detail{
 background:linear-gradient(120deg,#f1f5ff,#e8f0ff);
@@ -91,6 +90,7 @@ margin-bottom:30px;
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:20px;
+margin-bottom:20px;
 }
 
 /* BOX */
@@ -111,6 +111,19 @@ margin-bottom:5px;
 font-size:16px;
 font-weight:600;
 color:#1e293b;
+}
+
+/* TOTAL DENDA BOX */
+.total-denda-box{
+background:#fee2e2;
+border-radius:12px;
+padding:20px;
+border:1px solid #fca5a5;
+text-align:center;
+font-size:20px;
+font-weight:700;
+color:#b91c1c;
+margin-bottom:30px;
 }
 
 /* BUTTON */
@@ -137,12 +150,10 @@ margin-top:35px;
 
 </style>
 
-
 <div class="header-detail">
 <h4>Detail Denda</h4>
 <p>Informasi lengkap denda keterlambatan pengembalian buku</p>
 </div>
-
 
 <div class="card card-detail">
 
@@ -153,106 +164,82 @@ margin-top:35px;
 <img src="https://picsum.photos/200" class="book-photo">
 @endif
 
-
 {{-- JUDUL --}}
 <div class="detail-title">
 {{ optional($pengembalian->peminjaman->buku)->judul }}
 </div>
 
-
 @php
 $terlambat = optional($pengembalian->denda)->hari_terlambat ?? 0;
-$totalDenda = $terlambat * 1000;
+$jumlahBuku = $pengembalian->peminjaman->jumlah ?? 1; 
+$dendaPerBukuPerHari = 1000; 
+$totalDenda = $terlambat * $jumlahBuku * $dendaPerBukuPerHari;
 $status = optional($pengembalian->denda)->status ?? 'menunggu';
 @endphp
 
-
 {{-- STATUS --}}
 <div class="status-area">
-
 @if($status == 'menunggu')
-<span class="status-badge status-menunggu">
-Menunggu Pembayaran
-</span>
-
+<span class="status-badge status-menunggu">Menunggu Pembayaran</span>
 @elseif($status == 'verifikasi')
-<span class="status-badge status-verif">
-Menunggu Verifikasi
-</span>
-
+<span class="status-badge status-verif">Menunggu Verifikasi</span>
 @else
-<span class="status-badge status-lunas">
-Lunas
-</span>
+<span class="status-badge status-lunas">Lunas</span>
 @endif
-
 </div>
-
 
 <div class="detail-grid">
 
 <div class="info-box">
 <div class="label">Penulis</div>
-<div class="value">
-{{ optional($pengembalian->peminjaman->buku)->penulis ?? '-' }}
-</div>
+<div class="value">{{ optional($pengembalian->peminjaman->buku)->penulis ?? '-' }}</div>
 </div>
 
 <div class="info-box">
 <div class="label">Penerbit</div>
-<div class="value">
-{{ optional($pengembalian->peminjaman->buku)->penerbit ?? '-' }}
-</div>
+<div class="value">{{ optional($pengembalian->peminjaman->buku)->penerbit ?? '-' }}</div>
 </div>
 
 <div class="info-box">
 <div class="label">Nama Anggota</div>
-<div class="value">
-{{ $pengembalian->peminjaman->nama_anggota ?? '-' }}
-</div>
+<div class="value">{{ $pengembalian->peminjaman->nama_anggota ?? '-' }}</div>
 </div>
 
 <div class="info-box">
 <div class="label">Tanggal Pinjam</div>
-<div class="value">
-{{ \Carbon\Carbon::parse($pengembalian->peminjaman->tgl_pinjam)->format('d M Y') }}
-</div>
+<div class="value">{{ \Carbon\Carbon::parse($pengembalian->peminjaman->tgl_pinjam)->format('d M Y') }}</div>
 </div>
 
 <div class="info-box">
 <div class="label">Tanggal Kembali</div>
-<div class="value">
-{{ \Carbon\Carbon::parse($pengembalian->peminjaman->tgl_kembali)->format('d M Y') }}
-</div>
+<div class="value">{{ \Carbon\Carbon::parse($pengembalian->peminjaman->tgl_kembali)->format('d M Y') }}</div>
 </div>
 
 <div class="info-box">
 <div class="label">Tanggal Dikembalikan</div>
-<div class="value">
-{{ \Carbon\Carbon::parse($pengembalian->tgl_dikembalikan)->format('d M Y') }}
-</div>
+<div class="value">{{ \Carbon\Carbon::parse($pengembalian->tgl_dikembalikan)->format('d M Y') }}</div>
 </div>
 
 <div class="info-box">
 <div class="label">Hari Terlambat</div>
-<div class="value">
-{{ $terlambat }} Hari
-</div>
+<div class="value">{{ $terlambat }} Hari</div>
 </div>
 
 <div class="info-box">
-<div class="label">Total Denda</div>
-<div class="value">
+<div class="label">Jumlah Buku</div>
+<div class="value">{{ $jumlahBuku }}</div>
+</div>
+
+</div>
+
+{{-- TOTAL DENDA --}}
+<div class="total-denda-box">
 @if($totalDenda > 0)
-Rp {{ number_format($totalDenda,0,',','.') }}
+Total Denda: Rp {{ number_format($totalDenda,0,',','.') }}
 @else
-Tidak Ada
+Tidak Ada Denda
 @endif
 </div>
-</div>
-
-</div>
-
 
 <div class="btn-area">
 <a href="{{ route('admin.denda.index') }}" class="btn-back">

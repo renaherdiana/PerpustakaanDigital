@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-
 /* HEADER */
 .header-page{
 background:#4b4e6d;
@@ -120,9 +119,7 @@ border-radius:8px !important;
 background:#4b4e6d;
 border-color:#4b4e6d;
 }
-
 </style>
-
 
 <!-- HEADER -->
 <div class="header-page">
@@ -132,10 +129,22 @@ Home / Denda
 </div>
 </div>
 
-
 <div class="container">
 
 <!-- TOTAL DENDA -->
+@php
+$totalDenda = 0;
+@endphp
+
+@foreach($dendas as $item)
+@php
+$hariTerlambat = $item->hari_terlambat ?? 0;
+$jumlahBuku = $item->peminjaman->jumlah ?? 1;
+$dendaPerBukuPerHari = 1000;
+$totalDenda += $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
+@endphp
+@endforeach
+
 <div class="card-denda">
 <i class="bi bi-cash-stack"></i>
 Total Denda Aktif :
@@ -144,100 +153,67 @@ Rp {{ number_format($totalDenda,0,',','.') }}
 </b>
 </div>
 
-
 <!-- INFO BAYAR CASH -->
 <div class="info-bayar">
 <b>Pembayaran Denda</b><br>
 Pembayaran denda dilakukan secara <b>CASH</b> di perpustakaan kepada petugas/admin.
 </div>
 
-
 <!-- TABLE -->
 <div class="table-custom">
-
 <table class="table mb-0">
-
 <thead>
 <tr>
 <th>No</th>
 <th>Judul Buku</th>
 <th>Tanggal Terlambat</th>
-<th>Jumlah</th>
+<th>Jumlah Buku</th>
+<th>Jumlah Denda</th>
 <th>Status</th>
 <th>Action</th>
 </tr>
 </thead>
 
 <tbody>
-
 @forelse($dendas as $item)
 
 @php
-$jumlah = $item->hari_terlambat * 1000;
+$hariTerlambat = $item->hari_terlambat ?? 0;
+$jumlahBuku = $item->peminjaman->jumlah ?? 1;
+$dendaPerBukuPerHari = 1000;
+$totalItemDenda = $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
 @endphp
 
 <tr>
-
+<td>{{ $dendas->firstItem() + $loop->index }}</td>
+<td>{{ $item->peminjaman->buku->judul ?? '-' }}</td>
+<td>{{ $hariTerlambat }} Hari</td>
+<td>{{ $jumlahBuku }}</td>
+<td>Rp {{ number_format($totalItemDenda,0,',','.') }}</td>
 <td>
-{{ $dendas->firstItem() + $loop->index }}
-</td>
-
-<td>
-{{ $item->peminjaman->buku->judul ?? '-' }}
-</td>
-
-<td>
-{{ \Carbon\Carbon::parse($item->peminjaman->tgl_kembali)->format('d-m-Y') }}
-</td>
-
-<td>
-Rp {{ number_format($jumlah,0,',','.') }}
-</td>
-
-<td>
-
 @if($item->status == 'selesai')
-
-<span class="status-lunas">
-Lunas
-</span>
-
+<span class="status-lunas">Lunas</span>
 @else
-
-<span class="status-belum">
-Belum Dibayar
-</span>
-
+<span class="status-belum">Belum Dibayar</span>
 @endif
-
 </td>
-
 <td>
-
 <a href="{{ route('denda.detail', $item->id) }}" class="btn-detail">
 <i class="bi bi-eye"></i> Detail
 </a>
-
 </td>
-
 </tr>
 
 @empty
-
 <tr>
-<td colspan="6" class="text-center">
+<td colspan="7" class="text-center">
 Tidak ada data denda
 </td>
 </tr>
-
 @endforelse
-
 </tbody>
-
 </table>
-
 </div>
-
 
 <!-- PAGINATION -->
 <div class="mt-4">
@@ -246,23 +222,16 @@ Tidak ada data denda
 
 </div>
 
-
-<!-- POPUP BERHASIL -->
 @if(session('success'))
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-
 Swal.fire({
 icon: 'success',
 title: 'Berhasil!',
 text: 'Data berhasil diperbarui',
 confirmButtonColor: '#4b4e6d'
 })
-
 </script>
-
 @endif
 
 @endsection

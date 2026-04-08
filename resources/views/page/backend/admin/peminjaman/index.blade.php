@@ -3,296 +3,246 @@
 @section('content')
 
 <style>
-
+/* --- TITLE --- */
 .page-title{
-font-weight:600;
-font-size:18px;
-margin-bottom:18px;
-color:#334155;
+    font-weight:700;
+    font-size:20px;
+    margin-bottom:22px;
+    color:#1e293b;
 }
 
-/* CARD */
-
+/* --- CARD --- */
 .card-custom{
-border:none;
-border-radius:10px;
-box-shadow:0 4px 14px rgba(0,0,0,0.04);
-padding:18px;
-background:white;
+    border:none;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.05);
+    padding:22px;
+    background:white;
 }
 
-/* FILTER */
-
+/* --- FILTER --- */
 .filter-area{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
-
 .filter-left{
-display:flex;
-gap:10px;
+    display:flex;
+    gap:14px;
 }
-
 .filter-left input,
 .filter-left select{
-padding:6px 10px;
-border-radius:6px;
-border:1px solid #e2e8f0;
-font-size:13px;
+    min-width:200px;
+    padding:8px 12px;
+    border-radius:10px;
+    border:1px solid #e2e8f0;
+    font-size:14px;
 }
 
-/* TABLE */
-
+/* --- TABLE --- */
 .table{
-font-size:13px;
+    font-size:14px;
 }
-
 .table thead{
-background:#f8fafc;
+    background:#f8fafc;
 }
-
 .table th{
-font-weight:600;
-color:#475569;
+    font-weight:600;
+    color:#475569;
 }
-
 .table td{
-vertical-align:middle;
+    vertical-align:middle;
 }
-
 .table tbody tr:hover{
-background:#f8fafc;
+    background:#f8fafc;
 }
 
-/* BADGE */
-
+/* --- BADGE --- */
 .badge{
-padding:4px 9px;
-border-radius:14px;
-font-size:11px;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
 }
+.badge-wait{ background:#fef3c7; color:#92400e; }
+.badge-borrow{ background:#dbeafe; color:#1e40af; }
+.badge-done{ background:#d1fae5; color:#065f46; }
+.badge-danger{ background:#fee2e2; color:#b91c1c; }
 
-.badge-wait{
-background:#fef3c7;
-color:#92400e;
-}
-
-.badge-borrow{
-background:#dbeafe;
-color:#1e40af;
-}
-
-.badge-done{
-background:#d1fae5;
-color:#065f46;
-}
-
-.badge-danger{
-background:#fee2e2;
-color:#b91c1c;
-}
-
-/* BUTTON */
-
+/* --- BUTTONS --- */
 .btn-action{
-border:none;
-border-radius:6px;
-font-size:12px;
-padding:4px 8px;
-text-decoration:none;
+    border:none;
+    border-radius:8px;
+    font-size:13px;
+    padding:5px 10px;
 }
-
-.btn-approve{
-background:#dcfce7;
-color:#166534;
+.icon-btn{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    transition:0.2s;
 }
+.icon-show{ background:#ecfdf5; color:#059669; }
+.btn-approve{ background:#dcfce7; color:#166534; }
+.btn-reject{ background:#fee2e2; color:#b91c1c; }
 
-.btn-reject{
-background:#fee2e2;
-color:#b91c1c;
-}
-
-.btn-show{
-background:#f1f5f9;
-color:#334155;
-}
-
-/* PAGINATION */
-
+/* --- PAGINATION MIRIP DATA BUKU --- */
 .pagination{
-gap:4px;
+    display:flex;
+    list-style:none;
+    gap:4px;
+    justify-content:end;
 }
-
-.pagination .page-link{
-border:none;
-background:#f1f5f9;
-color:#334155;
-font-size:12px;
-padding:4px 9px;
-border-radius:6px;
+.pagination li{
+    display:inline-block;
 }
-
-.pagination .page-link:hover{
-background:#e2e8f0;
+.pagination li .page-link{
+    padding:6px 12px;
+    border-radius:6px;
+    border:1px solid #d1d5db;
+    color:#1f2937;
+    text-decoration:none;
+    transition:all 0.2s;
 }
-
-.pagination .active .page-link{
-background:#3b82f6;
-color:white;
+.pagination li .page-link:hover{
+    background-color:#e2e8f0;
 }
-
+.pagination li.active .page-link{
+    background-color:#3b82f6;
+    color:white;
+    border-color:#3b82f6;
+}
+.pagination li.disabled .page-link{
+    pointer-events:none;
+    opacity:0.5;
+}
 </style>
 
 <div class="card card-custom">
-<div class="card-body">
+    <div class="card-body">
 
-<h5 class="page-title">Data Peminjaman</h5>
+        <h5 class="page-title">Data Peminjaman</h5>
 
-<div class="filter-area">
+        <div class="filter-area">
+            <div class="filter-left">
+                <input type="text" id="searchInput" placeholder="Cari anggota / buku">
+                <select id="statusFilter">
+                    <option value="">Semua Status</option>
+                    <option value="menunggu">Menunggu Verifikasi</option>
+                    <option value="dipinjam">Dipinjam</option>
+                    <option value="terlambat">Terlambat</option>
+                    <option value="selesai">Selesai</option>
+                    <option value="ditolak">Ditolak</option>
+                </select>
+            </div>
+        </div>
 
-<div class="filter-left">
+        <div class="table-responsive">
+            <table class="table align-middle" id="peminjamanTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Anggota</th>
+                        <th>Buku</th>
+                        <th>Jumlah Pinjam</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Tgl Kembali</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($peminjamans as $no => $p)
+                    <tr>
+                        <td>{{ $peminjamans->firstItem() + $no }}</td>
+                        <td>{{ $p->nama_anggota }}</td>
+                        <td>{{ optional($p->buku)->judul }}</td>
+                        <td>{{ $p->jumlah }}</td>
+                        <td>{{ $p->tgl_pinjam }}</td>
+                        <td>{{ $p->tgl_kembali }}</td>
+                        <td>
+                            @if($p->status == 'menunggu')
+                                <span class="badge badge-wait">Menunggu</span>
+                            @elseif($p->status == 'dipinjam')
+                                <span class="badge badge-borrow">Dipinjam</span>
+                            @elseif($p->status == 'terlambat')
+                                <span class="badge badge-danger">Terlambat</span>
+                            @elseif($p->status == 'selesai')
+                                <span class="badge badge-done">Selesai</span>
+                            @elseif($p->status == 'ditolak')
+                                <span class="badge badge-danger">Ditolak</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($p->status == 'menunggu')
+                                <form action="{{ route('admin.peminjaman.update',$p->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="status" value="dipinjam">
+                                    <button class="btn-action btn-approve">✔</button>
+                                </form>
+                                <form action="{{ route('admin.peminjaman.update',$p->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="status" value="ditolak">
+                                    <button class="btn-action btn-reject">✖</button>
+                                </form>
+                            @else
+                                <a href="{{ route('admin.peminjaman.show',$p->id) }}" class="icon-btn icon-show">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">Belum ada data</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-<input type="text" id="searchInput" placeholder="Cari...">
+        <!-- CUSTOM PAGINATION -->
+        @php
+            $totalPages = $peminjamans->lastPage();
+            $currentPage = $peminjamans->currentPage();
+        @endphp
+        @if($totalPages > 1)
+        <ul class="pagination">
+            <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $peminjamans->url($currentPage - 1) }}">Previous</a>
+            </li>
 
-<select id="statusFilter">
-<option value="">Semua</option>
-<option value="menunggu">Menunggu</option>
-<option value="dipinjam">Dipinjam</option>
-<option value="terlambat">Terlambat</option>
-<option value="selesai">Selesai</option>
-<option value="selesai">Menunggu Verifikasi</option>
-<option value="ditolak">Ditolak</option>
-</select>
+            @for($i = 1; $i <= $totalPages; $i++)
+                @if($i == 1 || $i == $totalPages || ($i >= $currentPage - 2 && $i <= $currentPage + 2))
+                    <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $peminjamans->url($i) }}">{{ $i }}</a>
+                    </li>
+                @elseif($i == 2 && $currentPage > 4)
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                @elseif($i == $totalPages - 1 && $currentPage < $totalPages - 3)
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                @endif
+            @endfor
 
-</div>
+            <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $peminjamans->url($currentPage + 1) }}">Next</a>
+            </li>
+        </ul>
+        @endif
 
-</div>
-
-<div class="table-responsive">
-
-<table class="table align-middle" id="peminjamanTable">
-
-<thead>
-<tr>
-<th>No</th>
-<th>Anggota</th>
-<th>Buku</th>
-<th>Tgl Pinjam</th>
-<th>Tgl Kembali</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</thead>
-
-<tbody>
-
-@forelse($peminjamans as $no => $p)
-
-<tr>
-
-<td>{{ $peminjamans->firstItem() + $no }}</td>
-<td>{{ $p->nama_anggota }}</td>
-
-<td>{{ optional($p->buku)->judul }}</td>
-
-<td>{{ $p->tgl_pinjam }}</td>
-<td>{{ $p->tgl_kembali }}</td>
-
-<td>
-
-@if($p->status == 'menunggu') 
-<span class="badge badge-wait">Menunggu</span>
-
-@elseif($p->status == 'dipinjam') 
-<span class="badge badge-borrow">Dipinjam</span>
-
-@elseif($p->status == 'terlambat') 
-<span class="badge badge-danger">Terlambat</span>
-
-@elseif($p->status == 'selesai') 
-<span class="badge badge-done">Selesai</span>
-
-@elseif($p->status == 'menunggu_verifikasi')
-<span class="badge bg-secondary">Menunggu Verifikasi</span>
-
-@elseif($p->status == 'ditolak') 
-<span class="badge badge-danger">Ditolak</span>
-
-@endif
-
-</td>
-
-<td>
-
-@if($p->status == 'menunggu')
-
-<form action="{{ route('admin.peminjaman.update',$p->id) }}" method="POST" style="display:inline;">
-@csrf
-@method('PUT')
-
-<input type="hidden" name="status" value="dipinjam">
-
-<button class="btn-action btn-approve">✔</button>
-
-</form>
-
-<form action="{{ route('admin.peminjaman.update',$p->id) }}" method="POST" style="display:inline;">
-@csrf
-@method('PUT')
-
-<input type="hidden" name="status" value="ditolak">
-
-<button class="btn-action btn-reject">✖</button>
-
-</form>
-
-@else
-
-<a href="{{ route('admin.peminjaman.show',$p->id) }}" class="btn-action btn-show">
-👁
-</a>
-
-@endif
-
-</td>
-
-</tr>
-
-@empty
-
-<tr>
-<td colspan="7" style="text-align:center;padding:20px;">
-Belum ada data
-</td>
-</tr>
-
-@endforelse
-
-</tbody>
-
-</table>
-
-</div>
-
-<div class="d-flex justify-content-between align-items-center mt-3">
-
-<div style="font-size:12px;color:#64748b;">
-{{ $peminjamans->firstItem() }}-{{ $peminjamans->lastItem() }} dari {{ $peminjamans->total() }}
-</div>
-
-<div>
-{{ $peminjamans->links() }}
-</div>
-
-</div>
-
-</div>
+    </div>
 </div>
 
 <script>
-
 const searchInput=document.getElementById("searchInput");
 const statusFilter=document.getElementById("statusFilter");
 const table=document.getElementById("peminjamanTable");
@@ -302,29 +252,15 @@ searchInput.addEventListener("keyup",filterTable);
 statusFilter.addEventListener("change",filterTable);
 
 function filterTable(){
-
-const searchValue=searchInput.value.toLowerCase();
-const statusValue=statusFilter.value.toLowerCase();
-
-for(let i=1;i<rows.length;i++){
-
-const anggota=rows[i].cells[1]?.textContent.toLowerCase();
-const buku=rows[i].cells[2]?.textContent.toLowerCase();
-const status=rows[i].cells[5]?.textContent.toLowerCase();
-
-const cocokSearch=anggota?.includes(searchValue)||buku?.includes(searchValue);
-const cocokStatus=statusValue===""||status?.includes(statusValue);
-
-if(cocokSearch&&cocokStatus){
-rows[i].style.display="";
-}else{
-rows[i].style.display="none";
+    const searchValue=searchInput.value.toLowerCase();
+    const statusValue=statusFilter.value.toLowerCase();
+    for(let i=1;i<rows.length;i++){
+        const anggota=rows[i].cells[1]?.textContent.toLowerCase();
+        const buku=rows[i].cells[2]?.textContent.toLowerCase();
+        const status=rows[i].cells[6]?.textContent.toLowerCase();
+        rows[i].style.display=(anggota.includes(searchValue)||buku.includes(searchValue)) && (statusValue===""||status.includes(statusValue)) ? "" : "none";
+    }
 }
-
-}
-
-}
-
 </script>
 
 @endsection

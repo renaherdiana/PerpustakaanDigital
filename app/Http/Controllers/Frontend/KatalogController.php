@@ -35,35 +35,36 @@ class KatalogController extends Controller
         $request->validate([
             'buku_id' => 'required',
             'nama' => 'required',
-            'tgl_pinjam' => 'required',
-            'tgl_kembali' => 'required'
+            'jumlah' => 'required|integer|min:1',
+            'tgl_pinjam' => 'required|date',
+            'tgl_kembali' => 'required|date'
         ]);
 
         // CARI BUKU
         $buku = Buku::findOrFail($request->buku_id);
 
         // CEK STOK
-        if ($buku->stok <= 0) {
+        if ($request->jumlah > $buku->stok) {
 
-            return redirect()->route('katalog')
-            ->with('error','Stok buku habis');
+            return redirect()->back()
+            ->with('error','Jumlah buku melebihi stok yang tersedia');
         }
 
         // SIMPAN PEMINJAMAN
         Peminjaman::create([
             'buku_id' => $request->buku_id,
             'nama_anggota' => $request->nama,
-            'judul_buku' => $request->judul_buku,
+            'jumlah' => $request->jumlah,
             'tgl_pinjam' => $request->tgl_pinjam,
             'tgl_kembali' => $request->tgl_kembali,
             'status' => 'menunggu'
         ]);
 
-        // KURANGI STOK
-        $buku->stok = $buku->stok - 1;
+        // KURANGI STOK SESUAI JUMLAH
+        $buku->stok = $buku->stok - $request->jumlah;
 
         // UPDATE STATUS BUKU
-        if($buku->stok == 0){
+        if($buku->stok <= 0){
             $buku->status = 'Habis';
         }else{
             $buku->status = 'Tersedia';
@@ -71,7 +72,7 @@ class KatalogController extends Controller
 
         $buku->save();
 
-        // KIRIM NOTIF SUCCESS
+        // NOTIFIKASI
         return redirect()->back()->with('success','Peminjaman berhasil diajukan');
     }
 

@@ -17,9 +17,7 @@ class PengembalianController extends Controller
     =============================== */
     public function index()
     {
-        $pengembalian = Pengembalian::with(
-            'peminjaman.buku'
-        )->latest()->get();
+        $pengembalian = Pengembalian::with('peminjaman.buku')->latest()->paginate(10); 
 
         return view(
             'page.backend.admin.pengembalian.index',

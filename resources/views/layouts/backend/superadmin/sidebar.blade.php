@@ -113,13 +113,6 @@
 </a>
 </li>
 
-<li>
-<a href="/superadmin/laporananggota" class="{{ request()->is('superadmin/laporananggota') ? 'active' : '' }}">
-<span>📑</span>
-<span>Laporan Anggota</span>
-</a>
-</li>
-
 <hr style="margin:12px 0; opacity:0.2;">
 
 <li>

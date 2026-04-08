@@ -28,29 +28,6 @@ align-items:center;
 margin-bottom:20px;
 }
 
-.filter-area .filter-left{
-display:flex;
-gap:15px;
-align-items:center;
-}
-
-.filter-area input{
-flex:1;
-min-width:300px;
-font-size:14px;
-padding:8px 12px;
-border-radius:10px;
-border:1px solid #e0e0e0;
-}
-
-.filter-area select{
-width:180px;
-font-size:14px;
-padding:8px 12px;
-border-radius:10px;
-border:1px solid #e0e0e0;
-}
-
 /* ADD BUTTON */
 .btn-add{
 background:linear-gradient(135deg,#7c6cf3,#9f8cff);
@@ -59,11 +36,7 @@ border:none;
 border-radius:12px;
 padding:8px 18px;
 font-weight:500;
-transition:0.2s;
-}
-
-.btn-add:hover{
-opacity:0.9;
+text-decoration:none;
 }
 
 /* TABLE */
@@ -80,11 +53,7 @@ color:#555;
 vertical-align:middle;
 }
 
-.table tbody tr:hover{
-background:#fdfdff;
-}
-
-/* USER PHOTO */
+/* PHOTO */
 .user-photo{
 width:45px;
 height:45px;
@@ -93,12 +62,11 @@ object-fit:cover;
 border:2px solid #f1f1ff;
 }
 
-/* STATUS BADGE */
+/* STATUS */
 .badge{
 padding:6px 12px;
 border-radius:20px;
 font-size:12px;
-font-weight:500;
 }
 
 .badge-active{
@@ -111,74 +79,76 @@ background:#fee2e2;
 color:#991b1b;
 }
 
-/* ACTION BUTTONS */
+/* ACTION ICONS */
+.action-icons{
+display:flex;
+gap:8px;
+}
 
-.btn-sm{
-border-radius:8px;
-font-size:12px;
-padding:5px 10px;
+/* ICON BUTTON */
+.icon-btn{
+width:34px;
+height:34px;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:16px;
 border:none;
+cursor:pointer;
+text-decoration:none;
+transition:0.2s;
 }
 
 /* EDIT */
-
-.btn-edit{
-background:#e0e7ff;
-color:#3730a3;
+.icon-edit{
+background:#eef2ff;
+color:#4f46e5;
 }
 
-.btn-edit:hover{
-background:#c7d2fe;
+.icon-edit:hover{
+background:#4f46e5;
+color:white;
 }
 
 /* DELETE */
-
-.btn-delete{
+.icon-delete{
 background:#fee2e2;
-color:#991b1b;
+color:#dc2626;
 }
 
-.btn-delete:hover{
-background:#fecaca;
+.icon-delete:hover{
+background:#dc2626;
+color:white;
 }
 
-/* SHOW */
-
-.btn-show{
-background:#f1f5f9;
-color:#334155;
+/* DETAIL */
+.icon-show{
+background:#ecfdf5;
+color:#059669;
 }
 
-.btn-show:hover{
-background:#e2e8f0;
+.icon-show:hover{
+background:#059669;
+color:white;
 }
 
 </style>
 
+
 <div class="card card-custom">
 <div class="card-body">
 
-<h5 class="page-title">Kelola Data User</h5>
+<h5 class="page-title">Kelola Data Petugas</h5>
 
-<!-- FILTER -->
+<!-- BUTTON TAMBAH -->
 <div class="filter-area">
 
-<div class="filter-left">
+<div></div>
 
-<input type="text" placeholder="Cari Anggota...">
-
-<select>
-<option>Role</option>
-<option>Admin</option>
-<option>Petugas</option>
-<option>Anggota</option>
-</select>
-
-</div>
-
-<button class="btn-add">
-+ Tambah User
-</button>
+<a href="{{ route('superadmin.datauser.create') }}" class="btn-add">
++ Tambah Petugas
+</a>
 
 </div>
 
@@ -188,58 +158,80 @@ background:#e2e8f0;
 <table class="table align-middle">
 
 <thead>
-
 <tr>
 <th>No</th>
 <th>Photo</th>
-<th>Nama Anggota</th>
+<th>Nama Petugas</th>
 <th>No Telephone</th>
 <th>Status</th>
 <th>Action</th>
 </tr>
-
 </thead>
 
 <tbody>
 
-<tr>
-<td>1</td>
-<td><img src="https://i.pravatar.cc/40" class="user-photo"></td>
-<td>Rena Herdiana</td>
-<td>0895335053813</td>
-<td><span class="badge badge-active">Aktif</span></td>
-<td>
-<button class="btn btn-edit btn-sm">✏️ Edit</button>
-<button class="btn btn-delete btn-sm">🗑 Delete</button>
-<button class="btn btn-show btn-sm">👁 Show</button>
-</td>
-</tr>
+@forelse ($users as $key => $user)
 
 <tr>
-<td>2</td>
-<td><img src="https://i.pravatar.cc/41" class="user-photo"></td>
-<td>Virda Ainun Nazah</td>
-<td>0895335053813</td>
-<td><span class="badge badge-inactive">Tidak Aktif</span></td>
+
+<td>{{ $key + 1 }}</td>
+
 <td>
-<button class="btn btn-edit btn-sm">✏️ Edit</button>
-<button class="btn btn-delete btn-sm">🗑 Delete</button>
-<button class="btn btn-show btn-sm">👁 Show</button>
+@if($user->photo)
+<img src="{{ asset('storage/'.$user->photo) }}" class="user-photo">
+@else
+<img src="https://i.pravatar.cc/45?img={{ $key+1 }}" class="user-photo">
+@endif
 </td>
+
+<td>{{ $user->name }}</td>
+
+<td>{{ $user->phone }}</td>
+
+<td>
+@if($user->status == 'aktif')
+<span class="badge badge-active">Aktif</span>
+@else
+<span class="badge badge-inactive">Tidak Aktif</span>
+@endif
+</td>
+
+<td>
+
+<div class="action-icons">
+
+<a href="{{ route('superadmin.datauser.edit',$user->id) }}" class="icon-btn icon-edit" title="Edit">
+<i class="bi bi-pencil"></i>
+</a>
+
+<form action="{{ route('superadmin.datauser.destroy',$user->id) }}" method="POST">
+@csrf
+@method('DELETE')
+
+<button class="icon-btn icon-delete" title="Hapus"
+onclick="return confirm('Yakin hapus petugas?')">
+<i class="bi bi-trash"></i>
+</button>
+
+</form>
+
+<a href="{{ route('superadmin.datauser.show',$user->id) }}" class="icon-btn icon-show" title="Detail">
+<i class="bi bi-eye"></i>
+</a>
+
+</div>
+
+</td>
+
 </tr>
 
+@empty
+
 <tr>
-<td>3</td>
-<td><img src="https://i.pravatar.cc/42" class="user-photo"></td>
-<td>Nela Fitria</td>
-<td>0895335053813</td>
-<td><span class="badge badge-inactive">Tidak Aktif</span></td>
-<td>
-<button class="btn btn-edit btn-sm">✏️ Edit</button>
-<button class="btn btn-delete btn-sm">🗑 Delete</button>
-<button class="btn btn-show btn-sm">👁 Show</button>
-</td>
+<td colspan="6" class="text-center">Data Petugas Belum Ada</td>
 </tr>
+
+@endforelse
 
 </tbody>
 
