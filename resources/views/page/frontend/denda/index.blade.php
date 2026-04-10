@@ -206,8 +206,9 @@ $totalItemDenda = $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
 
 @empty
 <tr>
-<td colspan="7" class="text-center">
-Tidak ada data denda
+<td colspan="7" style="text-align:center; padding:50px; color:#aaa;">
+    <div style="font-size:15px; font-weight:600; color:#888;">Belum ada denda</div>
+    <div style="font-size:13px; margin-top:4px; color:#bbb;">Kamu tidak memiliki denda saat ini</div>
 </td>
 </tr>
 @endforelse

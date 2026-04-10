@@ -16,6 +16,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\KatalogController;
 use App\Http\Controllers\Frontend\PeminjamansayaController;
 use App\Http\Controllers\Frontend\PengembalianController;
+use App\Http\Controllers\Frontend\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // ===============================
@@ -54,6 +55,11 @@ Route::get('/', function(){
     Route::get('/denda/bayar/{id}', [FrontendDendaController::class,'bayar'])->name('denda.bayar.form');
     Route::post('/denda/bayar/{id}', [FrontendDendaController::class,'prosesBayar'])->name('bayar.denda');
     Route::get('/denda/detail/{id}', [FrontendDendaController::class,'detail'])->name('denda.detail');
+
+    // Profile Anggota
+    Route::get('/profile', [ProfileController::class,'index'])->name('anggota.profile');
+    Route::get('/profile/edit', [ProfileController::class,'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class,'update'])->name('profile.update');
 
 
 // ===============================

@@ -199,7 +199,7 @@ Tidak Ada Denda
 </div>
 
 <div class="btn-area">
-    <a href="{{ route('admin.pengembalian.index') }}" class="btn-back">
+    <a href="{{ route('admin.pengembalian') }}" class="btn-back">
         ← Kembali ke Data Pengembalian
     </a>
 </div>

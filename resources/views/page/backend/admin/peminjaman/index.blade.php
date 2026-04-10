@@ -66,6 +66,7 @@
 }
 .badge-wait{ background:#fef3c7; color:#92400e; }
 .badge-borrow{ background:#dbeafe; color:#1e40af; }
+.badge-verify{ background:#ede9fe; color:#6d28d9; }
 .badge-done{ background:#d1fae5; color:#065f46; }
 .badge-danger{ background:#fee2e2; color:#b91c1c; }
 
@@ -135,8 +136,9 @@
                 <input type="text" id="searchInput" placeholder="Cari anggota / buku">
                 <select id="statusFilter">
                     <option value="">Semua Status</option>
-                    <option value="menunggu">Menunggu Verifikasi</option>
+                    <option value="menunggu">Menunggu</option>
                     <option value="dipinjam">Dipinjam</option>
+                    <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
                     <option value="terlambat">Terlambat</option>
                     <option value="selesai">Selesai</option>
                     <option value="ditolak">Ditolak</option>
@@ -169,15 +171,17 @@
                         <td>{{ $p->tgl_kembali }}</td>
                         <td>
                             @if($p->status == 'menunggu')
-                                <span class="badge badge-wait">Menunggu</span>
+                                <span class="badge badge-wait" data-status="menunggu">Menunggu</span>
                             @elseif($p->status == 'dipinjam')
-                                <span class="badge badge-borrow">Dipinjam</span>
+                                <span class="badge badge-borrow" data-status="dipinjam">Dipinjam</span>
+                            @elseif($p->status == 'menunggu_verifikasi')
+                                <span class="badge badge-verify" data-status="menunggu_verifikasi">Menunggu Verifikasi</span>
                             @elseif($p->status == 'terlambat')
-                                <span class="badge badge-danger">Terlambat</span>
+                                <span class="badge badge-danger" data-status="terlambat">Terlambat</span>
                             @elseif($p->status == 'selesai')
-                                <span class="badge badge-done">Selesai</span>
+                                <span class="badge badge-done" data-status="selesai">Selesai</span>
                             @elseif($p->status == 'ditolak')
-                                <span class="badge badge-danger">Ditolak</span>
+                                <span class="badge badge-danger" data-status="ditolak">Ditolak</span>
                             @endif
                         </td>
                         <td>
@@ -257,8 +261,9 @@ function filterTable(){
     for(let i=1;i<rows.length;i++){
         const anggota=rows[i].cells[1]?.textContent.toLowerCase();
         const buku=rows[i].cells[2]?.textContent.toLowerCase();
-        const status=rows[i].cells[6]?.textContent.toLowerCase();
-        rows[i].style.display=(anggota.includes(searchValue)||buku.includes(searchValue)) && (statusValue===""||status.includes(statusValue)) ? "" : "none";
+        const statusBadge=rows[i].cells[6]?.querySelector('.badge');
+        const statusData=statusBadge ? statusBadge.dataset.status : '';
+        rows[i].style.display=(anggota.includes(searchValue)||buku.includes(searchValue)) && (statusValue===""||statusData===statusValue) ? "" : "none";
     }
 }
 </script>

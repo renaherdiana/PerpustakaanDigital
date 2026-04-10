@@ -25,8 +25,9 @@ class PeminjamansayaController extends Controller
         ]);
 
 
-        // QUERY PEMINJAMAN + RELASI BUKU
-        $query = Peminjaman::with('buku');
+        // QUERY PEMINJAMAN + RELASI BUKU — filter by anggota login
+        $query = Peminjaman::with('buku')
+                    ->where('anggota_id', session('anggota_id'));
 
 
         /* ===============================

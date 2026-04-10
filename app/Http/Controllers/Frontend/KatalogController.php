@@ -52,12 +52,13 @@ class KatalogController extends Controller
 
         // SIMPAN PEMINJAMAN
         Peminjaman::create([
-            'buku_id' => $request->buku_id,
-            'nama_anggota' => $request->nama,
-            'jumlah' => $request->jumlah,
-            'tgl_pinjam' => $request->tgl_pinjam,
-            'tgl_kembali' => $request->tgl_kembali,
-            'status' => 'menunggu'
+            'buku_id'       => $request->buku_id,
+            'anggota_id'    => session('anggota_id'),
+            'nama_anggota'  => $request->nama,
+            'jumlah'        => $request->jumlah,
+            'tgl_pinjam'    => $request->tgl_pinjam,
+            'tgl_kembali'   => $request->tgl_kembali,
+            'status'        => 'menunggu'
         ]);
 
         // KURANGI STOK SESUAI JUMLAH

@@ -211,7 +211,7 @@
 </tr>
 </thead>
 <tbody id="tableBody">
-@foreach($peminjamans as $p)
+@forelse($peminjamans as $p)
 @php
 $today = \Carbon\Carbon::today();
 $kembali = \Carbon\Carbon::parse($p->tgl_kembali);
@@ -260,7 +260,14 @@ Ajukan Pengembalian
 @endif
 </td>
 </tr>
-@endforeach
+@empty
+<tr>
+    <td colspan="7" style="text-align:center; padding:50px; color:#aaa;">
+        <div style="font-size:15px; font-weight:600; color:#888;">Belum ada peminjaman</div>
+        <div style="font-size:13px; margin-top:4px; color:#bbb;">Kamu belum pernah meminjam buku</div>
+    </td>
+</tr>
+@endforelse
 </tbody>
 </table>
 

@@ -16,14 +16,19 @@ class DendaController extends Controller
     public function index()
     {
 
-        // AMBIL DATA DENDA + RELASI BUKU
+        // AMBIL DATA DENDA milik anggota login
         $dendas = Denda::with(['peminjaman.buku'])
+                    ->whereHas('peminjaman', function($q){
+                        $q->where('anggota_id', session('anggota_id'));
+                    })
                     ->latest()
                     ->paginate(5);
 
-
-        // TOTAL DENDA YANG BELUM LUNAS
+        // TOTAL DENDA BELUM LUNAS milik anggota login
         $totalDenda = Denda::where('status','!=','selesai')
+                        ->whereHas('peminjaman', function($q){
+                            $q->where('anggota_id', session('anggota_id'));
+                        })
                         ->get()
                         ->sum(function($item){
                             return $item->hari_terlambat * 1000;

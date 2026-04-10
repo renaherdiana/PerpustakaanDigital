@@ -155,7 +155,7 @@
             <span style="font-size:11px; opacity:0.6;">▼</span>
         </div>
         <div class="dropdown-menu" id="dropdownMenu">
-            <a href="#">Profile Saya</a>
+            <a href="{{ route('anggota.profile') }}">Profile Saya</a>
             <a href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Logout</a>
         </div>
         <form id="logoutForm" method="POST" action="{{ route('logout') }}" style="display:none;">
