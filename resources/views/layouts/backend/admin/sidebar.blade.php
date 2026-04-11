@@ -100,35 +100,35 @@
 </li>
 
 <li>
-<a href="/admin/anggota" class="{{ request()->is('admin/anggota') ? 'active' : '' }}">
+<a href="/admin/anggota" class="{{ request()->is('admin/anggota*') ? 'active' : '' }}">
 <span>👥</span>
 <span>Data Anggota</span>
 </a>
 </li>
 
 <li>
-<a href="/admin/databuku" class="{{ request()->is('admin/databuku') ? 'active' : '' }}">
+<a href="/admin/databuku" class="{{ request()->is('admin/databuku*') ? 'active' : '' }}">
 <span>📚</span>
 <span>Data Buku</span>
 </a>
 </li>
 
 <li>
-<a href="/admin/peminjaman" class="{{ request()->is('admin/peminjaman') ? 'active' : '' }}">
+<a href="/admin/peminjaman" class="{{ request()->is('admin/peminjaman*') ? 'active' : '' }}">
 <span>📖</span>
 <span>Data Peminjaman</span>
 </a>
 </li>
 
 <li>
-<a href="/admin/pengembalian" class="{{ request()->is('admin/pengembalian') ? 'active' : '' }}">
+<a href="/admin/pengembalian" class="{{ request()->is('admin/pengembalian*') ? 'active' : '' }}">
 <span>🔄</span>
 <span>Data Pengembalian</span>
 </a>
 </li>
 
 <li>
-<a href="/admin/denda" class="{{ request()->is('admin/denda') ? 'active' : '' }}">
+<a href="/admin/denda" class="{{ request()->is('admin/denda*') ? 'active' : '' }}">
 <span>💰</span>
 <span>Denda</span>
 </a>
