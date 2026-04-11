@@ -243,15 +243,106 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
     document.getElementById("btnCetak").addEventListener("click", function(){
-        let printContent = document.getElementById("laporanTable").outerHTML;
-        let WinPrint = window.open('', '', 'width=900,height=650');
-        WinPrint.document.write('<html><head><title>Laporan</title><style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid #000;padding:6px;text-align:left;}thead{background:#f8f8fb;}</style></head><body>');
-        WinPrint.document.write(printContent);
-        WinPrint.document.write('</body></html>');
+        const bulan = document.getElementById("filterBulan").value;
+        const tahun = document.getElementById("filterTahun").value;
+        const bulanLabel = bulan ? document.getElementById("filterBulan").options[document.getElementById("filterBulan").selectedIndex].text : 'Semua Bulan';
+        const tahunLabel = tahun ? tahun : 'Semua Tahun';
+
+        const judulLaporan = {
+            buku: 'Laporan Data Buku',
+            peminjaman: 'Laporan Peminjaman Buku',
+            pengembalian: 'Laporan Pengembalian Buku',
+            denda: 'Laporan Denda'
+        }[activeKategori];
+
+        const tableHTML = document.getElementById("laporanTable").outerHTML;
+        const tanggalCetak = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+
+        const WinPrint = window.open('', '', 'width=1000,height=700');
+        WinPrint.document.write(`
+        <html>
+        <head>
+            <title>${judulLaporan}</title>
+            <style>
+                * { margin:0; padding:0; box-sizing:border-box; }
+                body { font-family: Arial, sans-serif; font-size: 13px; color: #1a1a1a; padding: 30px 40px; }
+
+                /* KOP */
+                .kop { display:flex; align-items:center; gap:18px; border-bottom: 3px solid #4a4e69; padding-bottom: 14px; margin-bottom: 6px; }
+                .kop-text h2 { font-size: 16px; font-weight: 700; color: #4a4e69; margin-bottom: 2px; }
+                .kop-text p { font-size: 12px; color: #555; }
+                .kop-icon { font-size: 42px; }
+
+                /* JUDUL */
+                .judul-laporan { text-align: center; margin: 18px 0 4px; }
+                .judul-laporan h3 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #1a1a1a; }
+                .judul-laporan .periode { font-size: 12px; color: #666; margin-top: 4px; }
+                .garis { border: none; border-top: 1px solid #ccc; margin: 12px 0; }
+
+                /* INFO */
+                .info-row { display:flex; justify-content:space-between; font-size:12px; color:#555; margin-bottom: 14px; }
+
+                /* TABLE */
+                table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+                thead tr { background: #4a4e69; color: white; }
+                th { padding: 9px 10px; text-align: left; font-size: 12px; font-weight: 600; }
+                td { padding: 8px 10px; font-size: 12px; border-bottom: 1px solid #e8e8e8; }
+                tbody tr:nth-child(even) { background: #f7f8fc; }
+                tbody tr:last-child td { border-bottom: 2px solid #4a4e69; }
+
+                /* BADGE */
+                .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+                .badge-available,.badge-paid { background:#d1fae5; color:#065f46; }
+                .badge-empty,.badge-danger { background:#fee2e2; color:#991b1b; }
+                .badge-wait { background:#fef3c7; color:#92400e; }
+                .badge-borrow { background:#bfdbfe; color:#1e40af; }
+                .badge-default { background:#e5e7eb; color:#374151; }
+
+                /* FOOTER */
+                .footer { margin-top: 30px; display:flex; justify-content:flex-end; font-size:12px; color:#555; }
+                .ttd { text-align:center; }
+                .ttd .nama { margin-top: 50px; font-weight: 700; border-top: 1px solid #333; padding-top: 4px; }
+
+                @media print { body { padding: 20px; } }
+            </style>
+        </head>
+        <body>
+            <div class="kop">
+                <div class="kop-icon">📚</div>
+                <div class="kop-text">
+                    <h2>E-Library SMKN 3 Banjar</h2>
+                    <p>Sistem Informasi Perpustakaan Digital</p>
+                    <p>Jl. Julaeni RT/RW 05/02 Langensari, Kec. Langensari, Kota Banjar, Jawa Barat</p>
+                </div>
+            </div>
+
+            <div class="judul-laporan">
+                <h3>${judulLaporan}</h3>
+                <div class="periode">Periode: ${bulanLabel} ${tahunLabel}</div>
+            </div>
+
+            <hr class="garis">
+
+            <div class="info-row">
+                <span>Dicetak oleh: Petugas</span>
+                <span>Tanggal Cetak: ${tanggalCetak}</span>
+            </div>
+
+            ${tableHTML}
+
+            <div class="footer">
+                <div class="ttd">
+                    <div>Banjar, ${tanggalCetak}</div>
+                    <div>Petugas Perpustakaan</div>
+                    <div class="nama">( ________________ )</div>
+                </div>
+            </div>
+        </body>
+        </html>
+        `);
         WinPrint.document.close();
         WinPrint.focus();
-        WinPrint.print();
-        WinPrint.close();
+        setTimeout(() => { WinPrint.print(); WinPrint.close(); }, 500);
     });
 });
 </script>
