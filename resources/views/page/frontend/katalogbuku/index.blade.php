@@ -352,10 +352,6 @@ Pinjam </button>
 <button class="slider-btn" onclick="slideRight()">❯</button>
 </div>
 
-<div style="margin-top:20px;">
-{{ $bukus->links('vendor.pagination.bootstrap-5') }}
-</div>
-
 </div>
 
 <div id="pinjamModal" class="modal-pinjam">

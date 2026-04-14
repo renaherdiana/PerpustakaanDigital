@@ -23,7 +23,7 @@ class KatalogController extends Controller
             $query->where('kategori', $request->kategori);
         }
 
-        $bukus = $query->latest()->paginate(8)->withQueryString();
+        $bukus = $query->latest()->get();
         $kategoris = Buku::select('kategori')->distinct()->pluck('kategori');
 
         return view('page.frontend.katalogbuku.index', compact('bukus', 'kategoris'));
