@@ -45,13 +45,16 @@
     font-size:15px;
     color:#555;
     margin-bottom:12px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
 }
 
 .footer-list i{
-    width:25px;
-    margin-right:10px;
     color:#f4a825;
     font-size:16px;
+    margin-top:3px;
+    flex-shrink:0;
 }
 
 /* wave */
@@ -114,7 +117,7 @@ Mari tingkatkan literasi digital bersama<br>
 <h6 class="footer-title">Get In Touch</h6>
 
 <ul class="footer-list">
-<li><i class="fa-solid fa-location-dot"></i> SMKN 3 Banjar</li>
+<li><i class="fa-solid fa-location-dot"></i> Jl, Julaeni RT 05/ RW 02, Desa Langensari, Kec Langensari, Kota Banjar</li>
 <li><i class="fa-solid fa-envelope"></i> librarysmkn3banjar@gmail.com</li>
 <li><i class="fa-solid fa-phone"></i> +62 895335053813</li>
 </ul>

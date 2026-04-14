@@ -51,6 +51,7 @@ class UserController extends Controller
             'email'    => 'required|email|unique:users,email',
             'phone'    => 'required',
             'password' => 'required|min:6',
+            'status'   => 'required|in:aktif,tidak_aktif',
             'photo'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -65,7 +66,7 @@ class UserController extends Controller
             'phone'    => $request->phone,
             'password' => Hash::make($request->password),
             'role'     => 'petugas',
-            'status'   => 'aktif',
+            'status'   => $request->status,
             'photo'    => $photo
         ]);
 
