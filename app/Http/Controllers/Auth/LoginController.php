@@ -72,6 +72,11 @@ class LoginController extends Controller
             ->first();
 
         if ($anggota && Hash::check($password, $anggota->password)) {
+
+            if ($anggota->status !== 'aktif') {
+                return back()->with('error', 'Akun kamu tidak aktif. Hubungi petugas perpustakaan.');
+            }
+
             session([
                 'login_type'   => 'anggota',
                 'anggota_id'   => $anggota->id,

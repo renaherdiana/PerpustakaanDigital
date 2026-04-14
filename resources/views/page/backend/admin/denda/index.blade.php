@@ -169,9 +169,17 @@
         </div>
 
         <!-- FILTER -->
-        <div class="filter-area">
-            <input type="text" id="searchInput" placeholder=" Cari anggota atau judul buku...">
-        </div>
+        <form method="GET" action="{{ route('admin.denda.index') }}" class="filter-area">
+            <div style="display:flex; gap:10px;">
+                <input type="text" name="search" placeholder=" Cari anggota atau judul buku..." value="{{ request('search') }}">
+                <select name="status" onchange="this.form.submit()" style="padding:9px 14px; border-radius:10px; border:1.5px solid #e2e8f0; font-size:14px; outline:none;">
+                    <option value="">Semua Status</option>
+                    <option value="menunggu" {{ request('status')=='menunggu' ? 'selected' : '' }}>Belum Lunas</option>
+                    <option value="selesai" {{ request('status')=='selesai' ? 'selected' : '' }}>Lunas</option>
+                </select>
+                <button type="submit" style="padding:9px 16px; background:#2bb3c0; color:white; border:none; border-radius:10px; font-size:14px; cursor:pointer;">Cari</button>
+            </div>
+        </form>
 
         <!-- TABLE -->
         <div class="table-responsive">
@@ -260,17 +268,6 @@
     </div>
 </div>
 
-<script>
-const searchInput = document.getElementById('searchInput');
-const rows = document.querySelectorAll('#dendaTable tbody tr');
-searchInput.addEventListener('keyup', function(){
-    const val = this.value.toLowerCase();
-    rows.forEach(row => {
-        const anggota = row.cells[1]?.textContent.toLowerCase() || '';
-        const buku    = row.cells[2]?.textContent.toLowerCase() || '';
-        row.style.display = (anggota.includes(val) || buku.includes(val)) ? '' : 'none';
-    });
-});
-</script>
+
 
 @endsection

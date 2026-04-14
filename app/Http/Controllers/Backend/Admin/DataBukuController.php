@@ -10,11 +10,22 @@ use Illuminate\Support\Facades\Storage;
 class DataBukuController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $bukus = Buku::latest()->paginate(5);
+        $query = Buku::latest();
 
-        return view('page.backend.admin.databuku.index', compact('bukus'));
+        if ($request->search) {
+            $query->where('judul', 'like', '%'.$request->search.'%');
+        }
+
+        if ($request->kategori) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        $bukus = $query->paginate(5)->withQueryString();
+        $kategoris = Buku::select('kategori')->distinct()->orderBy('kategori')->pluck('kategori');
+
+        return view('page.backend.admin.databuku.index', compact('bukus', 'kategoris'));
     }
 
 

@@ -287,28 +287,26 @@ transform:scale(1.03);
 <div class="katalog-container">
 
 <div class="filter">
+<form method="GET" action="{{ route('katalog') }}" style="display:flex; gap:15px; width:100%;">
 
-<select id="kategoriFilter" class="form-control" style="max-width:200px;">
+<select name="kategori" class="form-control" style="max-width:200px;" onchange="this.form.submit()">
 <option value="">Semua Kategori</option>
-
-@foreach($bukus->pluck('kategori')->unique() as $kategori)
-
-<option value="{{ strtolower($kategori) }}">{{ $kategori }}</option>
+@foreach($kategoris as $kategori)
+<option value="{{ $kategori }}" {{ request('kategori')==$kategori ? 'selected' : '' }}>{{ $kategori }}</option>
 @endforeach
-
 </select>
 
-<input type="text" id="searchInput" class="form-control" placeholder="Cari judul buku...">
+<input type="text" name="search" class="form-control" placeholder="Cari judul buku..." value="{{ request('search') }}">
+<button type="submit" style="padding:8px 18px; background:#2bb3c0; color:white; border:none; border-radius:8px; cursor:pointer;">Cari</button>
 
+</form>
 </div>
 
 <div class="buku-slider" id="slider">
 
-@foreach($bukus as $buku)
+@forelse($bukus as $buku)
 
-<div class="card-buku"
-data-judul="{{ strtolower($buku->judul) }}"
-data-kategori="{{ strtolower($buku->kategori) }}">
+<div class="card-buku">
 
 @if($buku->photo) <img src="{{ asset('storage/'.$buku->photo) }}">
 @else <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
@@ -343,13 +341,19 @@ Pinjam </button>
 
 </div>
 
-@endforeach
+@empty
+<div style="width:100%; text-align:center; padding:40px; color:#aaa;">Tidak ada buku ditemukan</div>
+@endforelse
 
 </div>
 
 <div class="slider-control">
 <button class="slider-btn" onclick="slideLeft()">❮</button>
 <button class="slider-btn" onclick="slideRight()">❯</button>
+</div>
+
+<div style="margin-top:20px;">
+{{ $bukus->links('vendor.pagination.bootstrap-5') }}
 </div>
 
 </div>
@@ -385,57 +389,13 @@ Ajukan Peminjaman
 </div>
 
 <script>
-
-/* SLIDER */
-
 function slideLeft(){
-document.getElementById("slider").scrollBy({
-left:-300,
-behavior:'smooth'
-});
+    document.getElementById("slider").scrollBy({ left:-300, behavior:'smooth' });
 }
-
 function slideRight(){
-document.getElementById("slider").scrollBy({
-left:300,
-behavior:'smooth'
-});
+    document.getElementById("slider").scrollBy({ left:300, behavior:'smooth' });
 }
-
-/* SEARCH + FILTER */
-
-const searchInput = document.getElementById("searchInput");
-const kategoriFilter = document.getElementById("kategoriFilter");
-const books = document.querySelectorAll(".card-buku");
-
-function filterBooks(){
-
-let search = searchInput.value.toLowerCase();
-let kategori = kategoriFilter.value.toLowerCase();
-
-books.forEach(book => {
-
-let judul = book.dataset.judul;
-let kat = book.dataset.kategori;
-
-let matchSearch = judul.includes(search);
-let matchKategori = kategori === "" || kat.includes(kategori);
-
-if(matchSearch && matchKategori){
-book.style.display = "block";
-}else{
-book.style.display = "none";
-}
-
-});
-
-}
-
-searchInput.addEventListener("keyup", filterBooks);
-kategoriFilter.addEventListener("change", filterBooks);
-
 /* MODAL */
-
 function openModal(id,judul,penerbit,kategori,stok){
 
 if(stok == 0){

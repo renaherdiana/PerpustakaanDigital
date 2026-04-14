@@ -10,25 +10,28 @@ use Carbon\Carbon;
 class PeminjamanController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-
-        // UPDATE STATUS TERLAMBAT OTOMATIS
         Peminjaman::where('status','dipinjam')
         ->whereDate('tgl_kembali','<', Carbon::today())
-        ->update([
-            'status' => 'terlambat'
-        ]);
+        ->update(['status' => 'terlambat']);
 
-        // AMBIL DATA PEMINJAMAN + RELASI BUKU
-        $peminjamans = Peminjaman::with('buku')
-                        ->latest()
-                        ->paginate(10);
+        $query = Peminjaman::with('buku')->latest();
 
-        return view(
-            'page.backend.admin.peminjaman.index',
-            compact('peminjamans')
-        );
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('nama_anggota', 'like', '%'.$request->search.'%')
+                  ->orWhereHas('buku', fn($b) => $b->where('judul', 'like', '%'.$request->search.'%'));
+            });
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $peminjamans = $query->paginate(10)->withQueryString();
+
+        return view('page.backend.admin.peminjaman.index', compact('peminjamans'));
     }
 
 

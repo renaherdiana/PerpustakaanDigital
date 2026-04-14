@@ -223,7 +223,7 @@
 </thead>
 <tbody>
 @forelse($pengembalian as $no => $data)
-<tr>
+<tr data-status="{{ $data->status }}">
 <td>{{ $pengembalian->firstItem() + $no }}</td>
 <td>{{ $data->peminjaman->nama_anggota }}</td>
 <td>{{ optional($data->peminjaman->buku)->judul }}</td>
@@ -324,8 +324,8 @@ function filterTable(){
     for(let i=1;i<rows.length;i++){
         const anggota=rows[i].cells[1]?.textContent.toLowerCase();
         const buku=rows[i].cells[2]?.textContent.toLowerCase();
-        const status=rows[i].cells[5]?.textContent.toLowerCase();
-        rows[i].style.display=(anggota.includes(searchValue)||buku.includes(searchValue)) && (statusValue===""||status.includes(statusValue)) ? "" : "none";
+        const status=rows[i].dataset.status ?? '';
+        rows[i].style.display=(anggota.includes(searchValue)||buku.includes(searchValue)) && (statusValue===""||status===statusValue) ? "" : "none";
     }
 }
 

@@ -23,7 +23,9 @@ class DendaController extends Controller
             'denda'
         ])->whereHas('denda');
 
-        // Filter jika ada search
+        $status = $request->input('status');
+
+        // Filter search
         if ($search) {
             $dendasQuery->whereHas('peminjaman', function($q) use ($search){
                 $q->where('nama_anggota','like',"%{$search}%")
@@ -33,8 +35,15 @@ class DendaController extends Controller
             });
         }
 
+        // Filter status
+        if ($status) {
+            $dendasQuery->whereHas('denda', function($q) use ($status){
+                $q->where('status', $status);
+            });
+        }
+
         // Pagination 10 data per halaman
-        $dendas = $dendasQuery->latest()->paginate(10);
+        $dendas = $dendasQuery->latest()->paginate(10)->withQueryString();
 
         return view('page.backend.admin.denda.index', compact('dendas'));
     }

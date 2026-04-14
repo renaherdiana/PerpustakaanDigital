@@ -185,18 +185,19 @@
 </script>
 @endif
 
-<div class="search-box">
-    <input type="text" id="searchInput" class="search-input" placeholder="Cari Buku">
-    <select id="statusFilter" class="search-select">
+<form method="GET" action="{{ route('peminjamansaya') }}" class="search-box">
+    <input type="text" name="search" class="search-input" placeholder="Cari Buku" value="{{ request('search') }}">
+    <select name="status" class="search-select" onchange="this.form.submit()">
         <option value="">Semua Status</option>
-        <option value="menunggu">Menunggu</option>
-        <option value="dipinjam">Dipinjam</option>
-        <option value="terlambat">Terlambat</option>
-        <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
-        <option value="selesai">Selesai</option>
-        <option value="ditolak">Ditolak</option>
+        <option value="menunggu" {{ request('status')=='menunggu' ? 'selected' : '' }}>Menunggu</option>
+        <option value="dipinjam" {{ request('status')=='dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+        <option value="terlambat" {{ request('status')=='terlambat' ? 'selected' : '' }}>Terlambat</option>
+        <option value="menunggu_verifikasi" {{ request('status')=='menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+        <option value="selesai" {{ request('status')=='selesai' ? 'selected' : '' }}>Selesai</option>
+        <option value="ditolak" {{ request('status')=='ditolak' ? 'selected' : '' }}>Ditolak</option>
     </select>
-</div>
+    <button type="submit" style="padding:8px 16px; background:#4a4e69; color:white; border:none; border-radius:6px; cursor:pointer;">Cari</button>
+</form>
 
 <table class="table-custom">
 <thead class="table-header">

@@ -12,9 +12,19 @@ class DataAnggotaController extends Controller
     // ===============================
     // TAMPIL DATA
     // ===============================
-    public function index()
+    public function index(Request $request)
     {
-        $anggota = Anggota::orderBy('nama', 'asc')->paginate(10);
+        $query = Anggota::orderBy('nama', 'asc');
+
+        if ($request->search) {
+            $query->where('nama', 'like', '%'.$request->search.'%');
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $anggota = $query->paginate(10)->withQueryString();
 
         return view('page.backend.admin.dataanggota.index', compact('anggota'));
     }

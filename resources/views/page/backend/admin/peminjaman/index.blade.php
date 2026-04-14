@@ -132,18 +132,19 @@
         <h5 class="page-title">Data Peminjaman</h5>
 
         <div class="filter-area">
-            <div class="filter-left">
-                <input type="text" id="searchInput" placeholder="Cari anggota / buku">
-                <select id="statusFilter">
+            <form method="GET" action="{{ route('admin.peminjaman.index') }}" class="filter-left">
+                <input type="text" name="search" placeholder="Cari anggota / buku" value="{{ request('search') }}">
+                <select name="status" onchange="this.form.submit()">
                     <option value="">Semua Status</option>
-                    <option value="menunggu">Menunggu</option>
-                    <option value="dipinjam">Dipinjam</option>
-                    <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
-                    <option value="terlambat">Terlambat</option>
-                    <option value="selesai">Selesai</option>
-                    <option value="ditolak">Ditolak</option>
+                    <option value="menunggu" {{ request('status')=='menunggu' ? 'selected' : '' }}>Menunggu</option>
+                    <option value="dipinjam" {{ request('status')=='dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                    <option value="menunggu_verifikasi" {{ request('status')=='menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                    <option value="terlambat" {{ request('status')=='terlambat' ? 'selected' : '' }}>Terlambat</option>
+                    <option value="selesai" {{ request('status')=='selesai' ? 'selected' : '' }}>Selesai</option>
+                    <option value="ditolak" {{ request('status')=='ditolak' ? 'selected' : '' }}>Ditolak</option>
                 </select>
-            </div>
+                <button type="submit" style="padding:8px 14px; background:#4f7cff; color:white; border:none; border-radius:10px; cursor:pointer;">Cari</button>
+            </form>
         </div>
 
         <div class="table-responsive">
@@ -246,26 +247,6 @@
     </div>
 </div>
 
-<script>
-const searchInput=document.getElementById("searchInput");
-const statusFilter=document.getElementById("statusFilter");
-const table=document.getElementById("peminjamanTable");
-const rows=table.getElementsByTagName("tr");
 
-searchInput.addEventListener("keyup",filterTable);
-statusFilter.addEventListener("change",filterTable);
-
-function filterTable(){
-    const searchValue=searchInput.value.toLowerCase();
-    const statusValue=statusFilter.value.toLowerCase();
-    for(let i=1;i<rows.length;i++){
-        const anggota=rows[i].cells[1]?.textContent.toLowerCase();
-        const buku=rows[i].cells[2]?.textContent.toLowerCase();
-        const statusBadge=rows[i].cells[6]?.querySelector('.badge');
-        const statusData=statusBadge ? statusBadge.dataset.status : '';
-        rows[i].style.display=(anggota.includes(searchValue)||buku.includes(searchValue)) && (statusValue===""||statusData===statusValue) ? "" : "none";
-    }
-}
-</script>
 
 @endsection

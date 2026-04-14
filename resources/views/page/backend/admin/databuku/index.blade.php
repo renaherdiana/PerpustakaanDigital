@@ -179,16 +179,17 @@ $kategoris = $bukus->pluck('kategori')->unique();
 
         <div class="filter-area">
 
-            <div class="filter-left">
-                <input type="text" id="searchInput" placeholder="Cari Judul Buku...">
+            <form method="GET" action="{{ route('admin.databuku.index') }}" class="filter-left">
+                <input type="text" name="search" placeholder="Cari Judul Buku..." value="{{ request('search') }}">
 
-                <select id="kategoriFilter">
+                <select name="kategori" onchange="this.form.submit()">
                     <option value="">Semua Kategori</option>
                     @foreach($kategoris as $kategori)
-                        <option value="{{ $kategori }}">{{ $kategori }}</option>
+                        <option value="{{ $kategori }}" {{ request('kategori')==$kategori ? 'selected' : '' }}>{{ $kategori }}</option>
                     @endforeach
                 </select>
-            </div>
+                <button type="submit" style="padding:8px 14px; background:#4f7cff; color:white; border:none; border-radius:10px; cursor:pointer;">Cari</button>
+            </form>
 
             <a href="{{ route('admin.databuku.create') }}" class="btn-add">
                 <i class="bi bi-plus-lg"></i> Tambah Buku
@@ -308,33 +309,6 @@ $kategoris = $bukus->pluck('kategori')->unique();
     </div>
 </div>
 
-<script>
-const searchInput = document.getElementById("searchInput");
-const kategoriFilter = document.getElementById("kategoriFilter");
-const table = document.getElementById("bukuTable");
-const rows = table.getElementsByTagName("tr");
 
-function filterTable(){
-    const searchValue = searchInput.value.toLowerCase();
-    const kategoriValue = kategoriFilter.value.toLowerCase();
-
-    for(let i=1;i<rows.length;i++){
-        const judul = rows[i].cells[2]?.textContent.toLowerCase() || "";
-        const kategori = rows[i].cells[4]?.textContent.toLowerCase() || "";
-
-        const matchSearch = judul.includes(searchValue);
-        const matchKategori = kategoriValue === "" || kategori.includes(kategoriValue);
-
-        if(matchSearch && matchKategori){
-            rows[i].style.display="";
-        } else {
-            rows[i].style.display="none";
-        }
-    }
-}
-
-searchInput.addEventListener("keyup",filterTable);
-kategoriFilter.addEventListener("change",filterTable);
-</script>
 
 @endsection

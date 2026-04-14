@@ -11,10 +11,22 @@ class KatalogController extends Controller
 {
 
     // HALAMAN KATALOG
-    public function index()
+    public function index(Request $request)
     {
-        $bukus = Buku::all();
-        return view('page.frontend.katalogbuku.index', compact('bukus'));
+        $query = Buku::query();
+
+        if ($request->search) {
+            $query->where('judul', 'like', '%'.$request->search.'%');
+        }
+
+        if ($request->kategori) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        $bukus = $query->latest()->paginate(8)->withQueryString();
+        $kategoris = Buku::select('kategori')->distinct()->pluck('kategori');
+
+        return view('page.frontend.katalogbuku.index', compact('bukus', 'kategoris'));
     }
 
 

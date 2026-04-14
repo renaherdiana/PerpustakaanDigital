@@ -158,15 +158,16 @@
 
         <div class="filter-area">
 
-            <div class="filter-left">
-                <input type="text" id="searchInput" placeholder="Cari Nama Anggota...">
+            <form method="GET" action="{{ route('admin.anggota.index') }}" class="filter-left">
+                <input type="text" name="search" placeholder="Cari Nama Anggota..." value="{{ request('search') }}">
 
-                <select id="statusFilter">
+                <select name="status" onchange="this.form.submit()">
                     <option value="">Semua Status</option>
-                    <option value="aktif">Aktif</option>
-                    <option value="tidak_aktif">Tidak Aktif</option>
+                    <option value="aktif" {{ request('status')=='aktif' ? 'selected' : '' }}>Aktif</option>
+                    <option value="tidak_aktif" {{ request('status')=='tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
                 </select>
-            </div>
+                <button type="submit" style="padding:8px 14px; background:#4f7cff; color:white; border:none; border-radius:10px; cursor:pointer;">Cari</button>
+            </form>
 
             <a href="{{ route('admin.anggota.create') }}" class="btn-add">
                 <i class="bi bi-plus-lg"></i> Tambah Anggota
@@ -245,33 +246,6 @@
     </div>
 </div>
 
-<script>
-const searchInput = document.getElementById("searchInput");
-const statusFilter = document.getElementById("statusFilter");
-const table = document.getElementById("anggotaTable");
-const rows = table.getElementsByTagName("tr");
 
-function filterTable(){
-    const searchValue = searchInput.value.toLowerCase();
-    const statusValue = statusFilter.value;
-
-    for(let i=1;i<rows.length;i++){
-        const nama = rows[i].cells[1]?.textContent.toLowerCase() || '';
-        const status = rows[i].dataset.status;
-
-        const matchSearch = nama.includes(searchValue);
-        const matchStatus = statusValue === "" || status === statusValue;
-
-        if(matchSearch && matchStatus){
-            rows[i].style.display="";
-        }else{
-            rows[i].style.display="none";
-        }
-    }
-}
-
-searchInput.addEventListener("keyup",filterTable);
-statusFilter.addEventListener("change",filterTable);
-</script>
 
 @endsection

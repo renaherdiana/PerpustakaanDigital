@@ -17,7 +17,8 @@ class Buku extends Model
         'penulis',
         'penerbit',
         'kategori',
-        'stok'
+        'stok',
+        'status'
     ];
 
     protected static function boot()
