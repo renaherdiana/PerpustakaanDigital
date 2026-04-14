@@ -231,6 +231,17 @@
 
     </div>
 
+    {{-- ALASAN DITOLAK --}}
+    @if($peminjaman->status == 'ditolak' && $peminjaman->alasan_ditolak)
+    <div style="margin-top:20px; background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; padding:18px 22px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="font-size:22px; line-height:1;">🚫</div>
+        <div>
+            <div style="font-size:12px; font-weight:700; color:#ef4444; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;">Alasan Ditolak</div>
+            <div style="font-size:15px; color:#7f1d1d; font-weight:500;">{{ $peminjaman->alasan_ditolak }}</div>
+        </div>
+    </div>
+    @endif
+
     {{-- BUTTON KEMBALI --}}
     <div class="btn-area">
         <a href="{{ route('admin.peminjaman.index') }}" class="btn-back">

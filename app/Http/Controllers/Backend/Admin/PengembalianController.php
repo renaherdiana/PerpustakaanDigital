@@ -77,8 +77,8 @@ class PengembalianController extends Controller
         /* ===============================
         HITUNG DAN SIMPAN DENDA (JIKA TERLAMBAT)
         =============================== */
-        $tglKembali = Carbon::parse($peminjaman->tgl_kembali);
-        $tglDikembalikan = Carbon::parse($pengembalian->created_at);
+        $tglKembali = Carbon::parse($peminjaman->tgl_kembali)->startOfDay();
+        $tglDikembalikan = Carbon::parse($pengembalian->created_at)->startOfDay();
 
         if ($tglDikembalikan->gt($tglKembali)) {
             $hariTerlambat = $tglKembali->diffInDays($tglDikembalikan);
@@ -112,8 +112,8 @@ class PengembalianController extends Controller
         /* ===============================
         HITUNG DENDA (HANYA UNTUK TAMPILAN)
         =============================== */
-        $tglKembali = Carbon::parse($pengembalian->peminjaman->tgl_kembali);
-        $tglDikembalikan = Carbon::parse($pengembalian->created_at);
+        $tglKembali = Carbon::parse($pengembalian->peminjaman->tgl_kembali)->startOfDay();
+        $tglDikembalikan = Carbon::parse($pengembalian->created_at)->startOfDay();
 
         $denda = 0;
         if ($tglDikembalikan->gt($tglKembali)) {

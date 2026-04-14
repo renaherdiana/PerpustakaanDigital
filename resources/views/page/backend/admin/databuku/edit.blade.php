@@ -124,7 +124,6 @@ margin-top:20px;
 <div class="error-text">{{ $message }}</div>
 @enderror
 </div>
-</div>
 
 
 <div class="mb-3">

@@ -55,12 +55,23 @@ class PeminjamanController extends Controller
     {
 
         $request->validate([
-            'status' => 'required|in:dipinjam,ditolak,selesai'
+            'status' => 'required|in:dipinjam,ditolak,selesai',
+            'alasan_ditolak' => 'nullable|string|max:500'
         ]);
 
         $pinjam = Peminjaman::findOrFail($id);
 
-        // KEMBALIKAN STOK JIKA DITOLAK
+        // CEK STOK JIKA DISETUJUI
+        if ($request->status === 'dipinjam' && $pinjam->status === 'menunggu') {
+            $buku = Buku::find($pinjam->buku_id);
+            if ($buku && $buku->stok < $pinjam->jumlah) {
+                return redirect()
+                    ->route('admin.peminjaman.index')
+                    ->with('error', 'Peminjaman tidak dapat disetujui. Stok buku "' . $buku->judul . '" saat ini hanya ' . $buku->stok . ', sedangkan jumlah pinjam ' . $pinjam->jumlah . '.');
+            }
+        }
+
+        // KEMBALIKAN STOK & SIMPAN ALASAN JIKA DITOLAK
         if ($request->status === 'ditolak' && $pinjam->status === 'menunggu') {
             $buku = Buku::find($pinjam->buku_id);
             if ($buku) {
@@ -68,6 +79,7 @@ class PeminjamanController extends Controller
                 $buku->status = $buku->stok > 0 ? 'Tersedia' : 'Habis';
                 $buku->save();
             }
+            $pinjam->alasan_ditolak = $request->alasan_ditolak;
         }
 
         // UPDATE STATUS

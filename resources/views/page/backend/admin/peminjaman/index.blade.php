@@ -131,6 +131,20 @@
 
         <h5 class="page-title">Data Peminjaman</h5>
 
+        @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
         <div class="filter-area">
             <form method="GET" action="{{ route('admin.peminjaman.index') }}" class="filter-left">
                 <input type="text" name="search" placeholder="Cari anggota / buku" value="{{ request('search') }}">
@@ -193,12 +207,7 @@
                                     <input type="hidden" name="status" value="dipinjam">
                                     <button class="btn-action btn-approve">✔</button>
                                 </form>
-                                <form action="{{ route('admin.peminjaman.update',$p->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="status" value="ditolak">
-                                    <button class="btn-action btn-reject">✖</button>
-                                </form>
+                                <button class="btn-action btn-reject" onclick="openTolakPopup('{{ $p->id }}','{{ optional($p->buku)->judul }}','{{ $p->nama_anggota }}')">✖</button>
                             @else
                                 <a href="{{ route('admin.peminjaman.show',$p->id) }}" class="icon-btn icon-show">
                                     <i class="bi bi-eye"></i>
@@ -248,5 +257,196 @@
 </div>
 
 
+<!-- POPUP TOLAK -->
+<style>
+.tolak-overlay{
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(15,23,42,0.55);
+    backdrop-filter:blur(4px);
+    z-index:1000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    animation:fadeIn .2s ease;
+}
+.tolak-overlay.show{ display:flex; }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+@keyframes slideUp{ from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+.tolak-modal{
+    background:white;
+    border-radius:20px;
+    width:460px;
+    overflow:hidden;
+    box-shadow:0 25px 60px rgba(0,0,0,0.25);
+    animation:slideUp .25s ease;
+}
+.tolak-header{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    padding:22px 28px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+.tolak-header-icon{
+    width:44px; height:44px;
+    background:rgba(255,255,255,0.2);
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px;
+    color:white;
+    flex-shrink:0;
+}
+.tolak-header h5{
+    margin:0;
+    color:white;
+    font-size:17px;
+    font-weight:700;
+}
+.tolak-header p{
+    margin:2px 0 0;
+    color:rgba(255,255,255,0.8);
+    font-size:12px;
+}
+.tolak-body{
+    padding:24px 28px;
+}
+.tolak-info-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+}
+.tolak-info-box{
+    flex:1;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:12px 14px;
+}
+.tolak-info-box .lbl{
+    font-size:11px;
+    color:#94a3b8;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    margin-bottom:4px;
+}
+.tolak-info-box .val{
+    font-size:13px;
+    font-weight:700;
+    color:#1e293b;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.tolak-label{
+    font-size:13px;
+    font-weight:600;
+    color:#374151;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.tolak-label span{ color:#ef4444; }
+.tolak-textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid #e2e8f0;
+    border-radius:10px;
+    font-size:13px;
+    resize:none;
+    transition:border .2s;
+    outline:none;
+    color:#1e293b;
+    font-family:inherit;
+    box-sizing:border-box;
+}
+.tolak-textarea:focus{ border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.1); }
+.tolak-footer{
+    padding:16px 28px 24px;
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+}
+.btn-tolak-batal{
+    padding:10px 22px;
+    border:1.5px solid #e2e8f0;
+    border-radius:10px;
+    background:white;
+    color:#64748b;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+.btn-tolak-batal:hover{ background:#f1f5f9; border-color:#cbd5e1; }
+.btn-tolak-submit{
+    padding:10px 22px;
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s;
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+.btn-tolak-submit:hover{ opacity:.9; transform:translateY(-1px); }
+</style>
+
+<div class="tolak-overlay" id="popupTolak">
+    <div class="tolak-modal">
+        <div class="tolak-header">
+            <div class="tolak-header-icon">✖</div>
+            <div>
+                <h5>Tolak Peminjaman</h5>
+                <p>Berikan alasan penolakan yang jelas untuk anggota</p>
+            </div>
+        </div>
+        <div class="tolak-body">
+            <div class="tolak-info-row">
+                <div class="tolak-info-box">
+                    <div class="lbl">📚 Buku</div>
+                    <div class="val" id="tolakJudul">-</div>
+                </div>
+                <div class="tolak-info-box">
+                    <div class="lbl">👤 Anggota</div>
+                    <div class="val" id="tolakAnggota">-</div>
+                </div>
+            </div>
+            <form id="formTolak" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="status" value="ditolak">
+                <div class="tolak-label">Alasan Ditolak <span>*</span></div>
+                <textarea name="alasan_ditolak" class="tolak-textarea" rows="4" required placeholder="Contoh: Stok buku tidak mencukupi, data anggota tidak lengkap, dll..."></textarea>
+            </form>
+        </div>
+        <div class="tolak-footer">
+            <button type="button" class="btn-tolak-batal" onclick="closeTolakPopup()">Batal</button>
+            <button type="submit" form="formTolak" class="btn-tolak-submit">✖ &nbsp;Tolak Peminjaman</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openTolakPopup(id, judul, anggota) {
+    document.getElementById('tolakJudul').innerText = judul;
+    document.getElementById('tolakAnggota').innerText = anggota;
+    document.getElementById('formTolak').action = '/admin/peminjaman/' + id;
+    document.getElementById('popupTolak').classList.add('show');
+}
+function closeTolakPopup() {
+    document.getElementById('popupTolak').classList.remove('show');
+    document.querySelector('#formTolak textarea').value = '';
+}
+document.getElementById('popupTolak').addEventListener('click', function(e){
+    if(e.target === this) closeTolakPopup();
+});
+</script>
 
 @endsection

@@ -18,7 +18,8 @@ class Peminjaman extends Model
         'jumlah',
         'tgl_pinjam',
         'tgl_kembali',
-        'status'
+        'status',
+        'alasan_ditolak'
     ];
 
     public function buku()

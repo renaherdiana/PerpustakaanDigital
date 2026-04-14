@@ -310,9 +310,11 @@ function openPopup(id, judul, jumlah, tglPinjam, tglKembali){
     document.getElementById("tglKembali").innerHTML = "Tgl Kembali : " + tglKembali;
 
     let today = new Date();
+    today.setHours(0,0,0,0);
     let kembali = new Date(tglKembali);
+    kembali.setHours(0,0,0,0);
     let diffTime = today - kembali;
-    let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    let diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
     let statusEl = document.getElementById("statusInfo");
     let dendaEl = document.getElementById("dendaInfo");

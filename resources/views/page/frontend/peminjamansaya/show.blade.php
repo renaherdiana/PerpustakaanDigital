@@ -174,6 +174,13 @@
 
                 </div>
 
+                @if($peminjaman->status == 'ditolak' && $peminjaman->alasan_ditolak)
+                <div class="info-item">
+                    <span class="info-label">Alasan Ditolak</span>
+                    <span class="info-value" style="color:#e74c3c; font-weight:600;">{{ $peminjaman->alasan_ditolak }}</span>
+                </div>
+                @endif
+
                 <a href="{{ route('peminjamansaya') }}" class="btn-back">
                     ← Kembali ke Peminjaman Saya
                 </a>

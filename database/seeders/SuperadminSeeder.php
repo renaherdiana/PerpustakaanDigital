@@ -11,13 +11,13 @@ class SuperadminSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name' => 'Admin Utama',
-            'email' => 'superadmin1@gmail.com',
-            'password' => Hash::make('11111111'), 
+            'name' => 'Kepala Perpustakaan',
+            'email' => 'kepala@perpus.com',
+            'password' => Hash::make('12345678'),
             'role' => 'superadmin',
             'status' => 'aktif',
         ]);
 
-        $this->command->info('Superadmin berhasil dibuat!');
+        $this->command->info('Kepala Perpustakaan berhasil dibuat!');
     }
 }

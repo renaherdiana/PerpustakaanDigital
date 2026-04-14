@@ -149,6 +149,16 @@
     color:white;
 }
 
+/* PAGINATION CUSTOM */
+.pagination .page-item .page-link{
+    color:#4f7cff;
+}
+.pagination .page-item.active .page-link{
+    background:#4f7cff;
+    border-color:#4f7cff;
+    color:white;
+}
+
 </style>
 
 <div class="card card-custom">
@@ -238,9 +248,40 @@
             </table>
 
             <!-- PAGINATION -->
-            <div class="d-flex justify-content-end mt-3">
-                {{ $anggota->links('pagination::bootstrap-5') }}
-            </div>
+            @php
+                $totalPages = $anggota->lastPage();
+                $currentPage = $anggota->currentPage();
+            @endphp
+
+            @if($totalPages > 1)
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item {{ $currentPage == 1 ? 'disabled' : '' }}">
+                        <a class="page-link" href="{{ $anggota->url($currentPage - 1) }}">Previous</a>
+                    </li>
+
+                    @for($i = 1; $i <= $totalPages; $i++)
+                        @if($i == 1 || $i == $totalPages || ($i >= $currentPage - 2 && $i <= $currentPage + 2))
+                            <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                                @if($i == $currentPage)
+                                    <span class="page-link">{{ $i }}</span>
+                                @else
+                                    <a class="page-link" href="{{ $anggota->url($i) }}">{{ $i }}</a>
+                                @endif
+                            </li>
+                        @elseif($i == 2 && $currentPage > 4)
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        @elseif($i == $totalPages - 1 && $currentPage < $totalPages - 3)
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        @endif
+                    @endfor
+
+                    <li class="page-item {{ $currentPage == $totalPages ? 'disabled' : '' }}">
+                        <a class="page-link" href="{{ $anggota->url($currentPage + 1) }}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            @endif
 
         </div>
     </div>
