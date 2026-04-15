@@ -253,10 +253,6 @@ Ajukan Peminjaman
 
 <h3>Pengajuan Berhasil</h3>
 
-<p>
-Pengajuan peminjaman berhasil dikirim.
-</p>
-
 <p style="margin-top:6px;font-weight:500;">
 Cek status pada menu <b>Peminjaman Saya</b>.
 </p>

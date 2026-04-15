@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function(){
         </head>
         <body>
             <div class="kop">
-                <div class="kop-icon">📚</div>
+                <div class="kop-icon"><img src="${window.location.origin}/assetsfrontend/img/perpustakaan.png" style="width:55px;height:55px;object-fit:contain;"></div>
                 <div class="kop-text">
                     <h2>E-Library SMKN 3 Banjar</h2>
                     <p>Sistem Informasi Perpustakaan Digital</p>
