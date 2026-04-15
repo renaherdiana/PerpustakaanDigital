@@ -69,7 +69,9 @@ class PengembalianController extends Controller
         // tambah stok buku
         $buku = Buku::find($peminjaman->buku_id);
         if ($buku) {
-            $buku->increment('stok');
+            $buku->increment('stok', $peminjaman->jumlah);
+            $buku->status = $buku->stok > 0 ? 'Tersedia' : 'Habis';
+            $buku->save();
         }
 
         /* ===============================

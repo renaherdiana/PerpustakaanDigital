@@ -45,11 +45,13 @@ class KatalogController extends Controller
 
         // VALIDASI
         $request->validate([
-            'buku_id' => 'required',
-            'nama' => 'required',
-            'jumlah' => 'required|integer|min:1',
-            'tgl_pinjam' => 'required|date',
-            'tgl_kembali' => 'required|date'
+            'buku_id'     => 'required',
+            'nama'        => 'required',
+            'jumlah'      => 'required|integer|min:1',
+            'tgl_pinjam'  => 'required|date',
+            'tgl_kembali' => 'required|date|after:tgl_pinjam'
+        ], [
+            'tgl_kembali.after' => 'Tanggal kembali harus setelah tanggal pinjam.'
         ]);
 
         // CARI BUKU

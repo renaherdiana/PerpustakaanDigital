@@ -215,6 +215,7 @@ required>
 <input 
 type="date" 
 name="tgl_pinjam" 
+id="tgl_pinjam"
 class="form-control" 
 required>
 </div>
@@ -225,6 +226,7 @@ required>
 <input 
 type="date" 
 name="tgl_kembali" 
+id="tgl_kembali"
 class="form-control" 
 required>
 </div>
@@ -269,6 +271,19 @@ Cek status pada menu <b>Peminjaman Saya</b>.
 <script>
 
 document.addEventListener("DOMContentLoaded", function(){
+
+const tglPinjam = document.getElementById('tgl_pinjam');
+const tglKembali = document.getElementById('tgl_kembali');
+
+tglPinjam.addEventListener('change', function(){
+    // min tgl_kembali = 1 hari setelah tgl_pinjam
+    const next = new Date(this.value);
+    next.setDate(next.getDate() + 1);
+    tglKembali.min = next.toISOString().split('T')[0];
+    if(tglKembali.value && tglKembali.value <= this.value){
+        tglKembali.value = '';
+    }
+});
 
 @if(session('success'))
 

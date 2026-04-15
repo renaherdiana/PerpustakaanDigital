@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
+use App\Models\Buku;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -58,6 +59,16 @@ class PeminjamanController extends Controller
         ]);
 
         $pinjam = Peminjaman::findOrFail($id);
+
+        // KEMBALIKAN STOK JIKA DITOLAK
+        if ($request->status === 'ditolak' && $pinjam->status === 'menunggu') {
+            $buku = Buku::find($pinjam->buku_id);
+            if ($buku) {
+                $buku->increment('stok', $pinjam->jumlah);
+                $buku->status = $buku->stok > 0 ? 'Tersedia' : 'Habis';
+                $buku->save();
+            }
+        }
 
         // UPDATE STATUS
         $pinjam->status = $request->status;
