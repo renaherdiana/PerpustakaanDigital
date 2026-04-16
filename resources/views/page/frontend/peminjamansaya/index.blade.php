@@ -71,6 +71,7 @@
 .badge-selesai{ background:#17a2b8; }
 .badge-ditolak{ background:#e74c3c; }
 .badge-terlambat{ background:#e74c3c; }
+.badge-ditolak-pengembalian{ background:#f97316; }
 
 /* BUTTON */
 .btn-kembali,.btn-lihat,.btn-menunggu{
@@ -131,6 +132,14 @@
     color:#991b1b;
     background:#fde2e2;
 }
+.popup-alasan{
+    padding:10px;
+    border-radius:8px;
+    font-weight:600;
+    color:#92400e;
+    background:#fef3c7;
+    border-left:4px solid #f59e0b;
+}
 .popup-btn{
     display:flex;
     justify-content:space-between;
@@ -156,18 +165,19 @@
     cursor:pointer;
 }
 
-/* TOAST SUCCESS */
-#successMessage{
+/* TOAST */
+.toast-msg{
     position:fixed;
     top:20px;
     right:20px;
-    background:#2ecc71;
-    color:white;
     padding:15px 25px;
     border-radius:10px;
     box-shadow:0 6px 15px rgba(0,0,0,0.2);
     z-index:1000;
+    color:white;
 }
+#successMessage{ background:#2ecc71; }
+#errorMessage{ background:#e74c3c; }
 </style>
 
 <div class="header-page">
@@ -177,12 +187,13 @@
 <div class="container">
 
 @if(session('success'))
-<div id="successMessage">{{ session('success') }}</div>
-<script>
-    setTimeout(function(){
-        document.getElementById('successMessage').style.display='none';
-    }, 4000);
-</script>
+<div id="successMessage" class="toast-msg">{{ session('success') }}</div>
+<script>setTimeout(function(){ document.getElementById('successMessage').style.display='none'; }, 4000);</script>
+@endif
+
+@if(session('error'))
+<div id="errorMessage" class="toast-msg">{{ session('error') }}</div>
+<script>setTimeout(function(){ document.getElementById('errorMessage').style.display='none'; }, 5000);</script>
 @endif
 
 <form method="GET" action="{{ route('peminjamansaya') }}" class="search-box">
@@ -195,6 +206,7 @@
         <option value="menunggu_verifikasi" {{ request('status')=='menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
         <option value="selesai" {{ request('status')=='selesai' ? 'selected' : '' }}>Selesai</option>
         <option value="ditolak" {{ request('status')=='ditolak' ? 'selected' : '' }}>Ditolak</option>
+        <option value="ditolak_pengembalian" {{ request('status')=='ditolak_pengembalian' ? 'selected' : '' }}>Ditolak Pengembalian</option>
     </select>
     <button type="submit" style="padding:8px 16px; background:#4a4e69; color:white; border:none; border-radius:6px; cursor:pointer;">Cari</button>
 </form>
@@ -220,6 +232,7 @@ $statusRow = $p->status;
 if($p->status == 'dipinjam' && $today->gt($kembali)){
     $statusRow = 'terlambat';
 }
+$hasDendaBelumLunas = $p->denda && $p->denda->status == 'menunggu';
 @endphp
 <tr class="table-row"
 data-judul="{{ strtolower(optional($p->buku)->judul ?? '') }}"
@@ -242,6 +255,8 @@ data-status="{{ strtolower($statusRow) }}">
 <span class="badge badge-selesai">Selesai</span>
 @elseif($statusRow=='ditolak')
 <span class="badge badge-ditolak">Ditolak</span>
+@elseif($statusRow=='ditolak_pengembalian')
+<span class="badge badge-ditolak-pengembalian">Ditolak Pengembalian</span>
 @endif
 </td>
 <td>
@@ -258,6 +273,15 @@ Ajukan Pengembalian
 <a href="{{ route('peminjamansaya.detail',$p->id) }}" class="btn-lihat">Lihat</a>
 @elseif($statusRow=='ditolak')
 <a href="{{ route('peminjamansaya.detail',$p->id) }}" class="btn-lihat">Detail</a>
+@elseif($statusRow=='ditolak_pengembalian')
+@if($hasDendaBelumLunas)
+<a href="{{ route('frontend.denda') }}" class="btn-kembali" style="background:#e74c3c;">Bayar Denda Dulu</a>
+@else
+<button class="btn-kembali" style="background:#f97316;"
+onclick="openPopupAjukanLagi('{{ $p->id }}','{{ optional($p->buku)->judul }}','{{ $p->jumlah ?? $p->jumlah_pinjam }}','{{ \Carbon\Carbon::parse($p->tgl_pinjam)->format('Y-m-d') }}','{{ \Carbon\Carbon::parse($p->tgl_kembali)->format('Y-m-d') }}','{{ addslashes($p->alasan_ditolak) }}')">
+Ajukan Lagi
+</button>
+@endif
 @endif
 </td>
 </tr>
@@ -278,7 +302,7 @@ Ajukan Pengembalian
 
 </div>
 
-<!-- POPUP -->
+<!-- POPUP AJUKAN PENGEMBALIAN -->
 <div class="popup-bg" id="popupForm">
 <div class="popup-box">
 <h3>Ajukan Pengembalian</h3>
@@ -300,6 +324,29 @@ Ajukan Pengembalian
 </div>
 </div>
 
+<!-- POPUP AJUKAN LAGI (setelah ditolak pengembalian) -->
+<div class="popup-bg" id="popupAjukanLagi">
+<div class="popup-box">
+<h3>Ajukan Pengembalian Lagi</h3>
+<div class="popup-input" id="al_judul"></div>
+<div class="popup-input" id="al_jumlah"></div>
+<div class="popup-input" id="al_tglPinjam"></div>
+<div class="popup-input" id="al_tglKembali"></div>
+<div class="popup-alasan" id="al_alasan"></div>
+<div class="popup-status" id="al_statusInfo"></div>
+<div class="popup-denda" id="al_dendaInfo"></div>
+
+<form action="{{ route('ajukan.pengembalian') }}" method="POST">
+@csrf
+<input type="hidden" name="peminjaman_id" id="al_peminjaman_id">
+<div class="popup-btn">
+<button type="button" class="btn-batal" onclick="closePopupAjukanLagi()">Batal</button>
+<button type="submit" class="btn-ajukan">Ajukan</button>
+</div>
+</form>
+</div>
+</div>
+
 <script>
 function openPopup(id, judul, jumlah, tglPinjam, tglKembali){
     document.getElementById("popupForm").style.display="flex";
@@ -309,16 +356,12 @@ function openPopup(id, judul, jumlah, tglPinjam, tglKembali){
     document.getElementById("tglPinjam").innerHTML = "Tgl Pinjam : " + tglPinjam;
     document.getElementById("tglKembali").innerHTML = "Tgl Kembali : " + tglKembali;
 
-    let today = new Date();
-    today.setHours(0,0,0,0);
-    let kembali = new Date(tglKembali);
-    kembali.setHours(0,0,0,0);
-    let diffTime = today - kembali;
-    let diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    let today = new Date(); today.setHours(0,0,0,0);
+    let kembali = new Date(tglKembali); kembali.setHours(0,0,0,0);
+    let diffDays = Math.round((today - kembali) / (1000 * 60 * 60 * 24));
 
     let statusEl = document.getElementById("statusInfo");
     let dendaEl = document.getElementById("dendaInfo");
-
     if(diffDays > 0){
         let totalDenda = diffDays * 1000 * parseInt(jumlah);
         statusEl.innerHTML = "Status : Terlambat "+diffDays+" hari";
@@ -334,6 +377,38 @@ function openPopup(id, judul, jumlah, tglPinjam, tglKembali){
 
 function closePopup(){
     document.getElementById("popupForm").style.display="none";
+}
+
+function openPopupAjukanLagi(id, judul, jumlah, tglPinjam, tglKembali, alasan){
+    document.getElementById("popupAjukanLagi").style.display="flex";
+    document.getElementById("al_peminjaman_id").value = id;
+    document.getElementById("al_judul").innerHTML = "Judul Buku : " + judul;
+    document.getElementById("al_jumlah").innerHTML = "Jumlah Buku : " + jumlah;
+    document.getElementById("al_tglPinjam").innerHTML = "Tgl Pinjam : " + tglPinjam;
+    document.getElementById("al_tglKembali").innerHTML = "Tgl Kembali : " + tglKembali;
+    document.getElementById("al_alasan").innerHTML = "⚠️ Alasan Ditolak : " + alasan;
+
+    let today = new Date(); today.setHours(0,0,0,0);
+    let kembali = new Date(tglKembali); kembali.setHours(0,0,0,0);
+    let diffDays = Math.round((today - kembali) / (1000 * 60 * 60 * 24));
+
+    let statusEl = document.getElementById("al_statusInfo");
+    let dendaEl = document.getElementById("al_dendaInfo");
+    if(diffDays > 0){
+        let totalDenda = diffDays * 1000 * parseInt(jumlah);
+        statusEl.innerHTML = "Status : Terlambat "+diffDays+" hari";
+        statusEl.style.background="#e74c3c";
+        dendaEl.innerHTML = "Estimasi Denda : Rp "+totalDenda.toLocaleString();
+        dendaEl.style.display="block";
+    } else {
+        statusEl.innerHTML = "Status : Tepat Waktu";
+        statusEl.style.background="#2ecc71";
+        dendaEl.innerHTML = "";
+    }
+}
+
+function closePopupAjukanLagi(){
+    document.getElementById("popupAjukanLagi").style.display="none";
 }
 </script>
 

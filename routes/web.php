@@ -93,6 +93,7 @@ Route::middleware('cekakses:petugas')->prefix('admin')->group(function() {
         Route::get('/pengembalian', [AdminPengembalianController::class,'index'])->name('admin.pengembalian');
         Route::get('/pengembalian/{id}', [AdminPengembalianController::class,'show'])->name('admin.pengembalian.show');
         Route::post('/pengembalian/verifikasi/{id}', [AdminPengembalianController::class,'verifikasi'])->name('admin.pengembalian.verifikasi');
+        Route::post('/pengembalian/tolak/{id}', [AdminPengembalianController::class,'tolak'])->name('admin.pengembalian.tolak');
 
         Route::get('/denda',[DendaController::class,'index'])->name('admin.denda.index');
         Route::post('/denda/bayar/{id}',[DendaController::class,'bayar'])->name('admin.denda.bayar');

@@ -178,14 +178,10 @@
 <td>{{ $loop->iteration }}</td>
 <td>{{ $item->peminjaman->nama_anggota ?? '-' }}</td>
 <td>{{ $item->peminjaman->jumlah ?? 1 }}</td>
-<td>{{ $item->hari_terlambat ?? 0 }} Hari</td>
-@php
-$totalDenda = ($item->hari_terlambat ?? 0) * 1000 * ($item->peminjaman->jumlah ?? 1);
-$status = strtolower($item->status ?? 'belum');
-@endphp
-<td>Rp {{ number_format($totalDenda,0,',','.') }}</td>
+<td>{{ $item->jenis == 'kerusakan' ? 'Kerusakan Buku' : ($item->hari_terlambat ?? 0).' Hari' }}</td>
+<td>Rp {{ number_format($item->denda, 0, ',', '.') }}</td>
 <td>
-@if($status=='selesai')
+@if($item->status == 'selesai')
 <span class="badge badge-paid">Lunas</span>
 @else
 <span class="badge badge-wait">Belum Dibayar</span>
@@ -225,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function(){
         buku:`<tr><th>No</th><th>Judul Buku</th><th>Stok</th><th>Status</th><th>Tanggal Masuk</th></tr>`,
         peminjaman:`<tr><th>No</th><th>Nama Peminjam</th><th>Buku</th><th>Jumlah Pinjam</th><th>Tanggal Peminjaman</th><th>Status</th></tr>`,
         pengembalian:`<tr><th>No</th><th>Nama Peminjam</th><th>Buku</th><th>Jumlah Pinjam</th><th>Tanggal Dikembalikan</th><th>Status</th></tr>`,
-        denda:`<tr><th>No</th><th>Nama Peminjam</th><th>Jumlah Buku</th><th>Hari Terlambat</th><th>Total Denda</th><th>Status</th></tr>`,
+        denda:`<tr><th>No</th><th>Nama Peminjam</th><th>Jumlah Buku</th><th>Keterangan</th><th>Total Denda</th><th>Status</th></tr>`,
         anggota:`<tr><th>No</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th></tr>`
     };
 

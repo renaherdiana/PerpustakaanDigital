@@ -20,10 +20,15 @@ class PengembalianController extends Controller
 
         $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
 
-        // cek sudah pernah ajukan
-        $cek = Pengembalian::where('peminjaman_id',$peminjaman->id)->first();
+        // cek denda belum lunas
+        $dendaBelumLunas = $peminjaman->denda()->where('status','menunggu')->exists();
+        if($dendaBelumLunas){
+            return redirect()->back()->with('error','Kamu masih memiliki denda yang belum dibayar. Lunasi denda terlebih dahulu sebelum mengajukan pengembalian.');
+        }
 
-        if($cek){
+        // cek sudah pernah ajukan (bukan ditolak_pengembalian)
+        $cek = Pengembalian::where('peminjaman_id',$peminjaman->id)->first();
+        if($cek && $peminjaman->status !== 'ditolak_pengembalian'){
             return redirect()->back()->with('error','Pengembalian sudah diajukan');
         }
 

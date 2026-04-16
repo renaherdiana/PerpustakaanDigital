@@ -78,11 +78,11 @@ class PengembalianController extends Controller
         HITUNG DAN SIMPAN DENDA (JIKA TERLAMBAT)
         =============================== */
         $tglKembali = Carbon::parse($peminjaman->tgl_kembali)->startOfDay();
-        $tglDikembalikan = Carbon::parse($pengembalian->created_at)->startOfDay();
+        $tglHariIni = Carbon::now()->startOfDay();
 
-        if ($tglDikembalikan->gt($tglKembali)) {
-            $hariTerlambat = $tglKembali->diffInDays($tglDikembalikan);
-            $totalDenda = $hariTerlambat * 1000;
+        if ($tglHariIni->gt($tglKembali)) {
+            $hariTerlambat = $tglKembali->diffInDays($tglHariIni);
+            $totalDenda = $hariTerlambat * $peminjaman->jumlah * 1000;
 
             // buat record denda jika belum ada
             Denda::updateOrCreate(
@@ -98,6 +98,43 @@ class PengembalianController extends Controller
         return redirect()
             ->back()
             ->with('success','Pengembalian berhasil diverifikasi');
+    }
+
+    /* ===============================
+    TOLAK PENGEMBALIAN
+    =============================== */
+    public function tolak(Request $request, $id)
+    {
+        $request->validate([
+            'alasan_ditolak' => 'required|string',
+            'denda_kerusakan' => 'nullable|integer|min:0',
+        ]);
+
+        $pengembalian = Pengembalian::findOrFail($id);
+        $peminjaman = $pengembalian->peminjaman;
+
+        // Hapus record pengembalian
+        $pengembalian->delete();
+
+        // Update status peminjaman + simpan alasan
+        $peminjaman->update([
+            'status' => 'ditolak_pengembalian',
+            'alasan_ditolak' => $request->alasan_ditolak,
+        ]);
+
+        // Kalau ada denda kerusakan, simpan ke tabel dendas
+        if ($request->filled('denda_kerusakan') && $request->denda_kerusakan > 0) {
+            Denda::updateOrCreate(
+                ['peminjaman_id' => $peminjaman->id, 'jenis' => 'kerusakan'],
+                [
+                    'hari_terlambat' => 0,
+                    'denda' => $request->denda_kerusakan,
+                    'status' => 'menunggu',
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Pengembalian ditolak.');
     }
 
     /* ===============================

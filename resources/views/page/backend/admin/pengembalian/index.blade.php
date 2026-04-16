@@ -66,14 +66,17 @@
     transition:0.2s;
 }
 .btn-verify{
-    background:#16a34a;
-    color:white;
-    font-weight:600;
-    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    background:#dcfce7;
+    color:#16a34a;
+    box-shadow:none;
 }
-.btn-verify:hover{
-    background:#15803d;
+.btn-verify:hover{ background:#bbf7d0; }
+.btn-tolak{
+    background:#fee2e2;
+    color:#dc2626;
+    box-shadow:none;
 }
+.btn-tolak:hover{ background:#fecaca; }
 
 /* --- BADGE --- */
 .badge{
@@ -238,15 +241,23 @@
 </td>
 <td>
 @if($data->status == 'menunggu_verifikasi')
-<button class="btn-action btn-verify"
+<div style="display:flex;gap:6px;">
+<button class="btn-action btn-verify icon-btn"
     data-id="{{ $data->id }}"
     data-nama="{{ $data->peminjaman->nama_anggota }}"
     data-judul="{{ optional($data->peminjaman->buku)->judul }}"
     data-jumlah="{{ $data->peminjaman->jumlah }}"
     data-denda="{{ $data->denda }}"
-    data-tgl_kembali="{{ $data->peminjaman->tgl_kembali }}">
-    Verifikasi
+    data-tgl_kembali="{{ $data->peminjaman->tgl_kembali }}"
+    title="Terima">
+    <i class="bi bi-check-lg"></i>
 </button>
+<button class="btn-action btn-tolak icon-btn"
+    onclick="openPopupTolak('{{ $data->id }}','{{ $data->peminjaman->nama_anggota }}')"
+    title="Tolak">
+    <i class="bi bi-x-lg"></i>
+</button>
+</div>
 @else
 <a href="{{ route('admin.pengembalian.show',$data->id) }}" class="icon-btn icon-show">
 <i class="bi bi-eye"></i>
@@ -286,6 +297,39 @@
 </ul>
 @endif
 
+</div>
+</div>
+
+<!-- POPUP TOLAK -->
+<div class="popup-bg" id="popupTolak">
+<div class="popup-box">
+<span class="popup-close" onclick="closePopupTolak()">&times;</span>
+<h4 class="popup-title">Tolak Pengembalian</h4>
+<div class="popup-data"><b>Nama Anggota:</b> <span id="tolakNama"></span></div>
+<form id="formTolak" method="POST">
+@csrf
+<div style="margin-top:16px;">
+<label style="font-weight:600;font-size:14px;color:#334155;">Alasan Penolakan <span style="color:red">*</span></label>
+<textarea name="alasan_ditolak" rows="3" required
+    style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e2e8f0;font-size:14px;resize:none;"
+    placeholder="Tulis alasan penolakan..."></textarea>
+</div>
+<div style="margin-top:14px;">
+<label style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:#334155;cursor:pointer;">
+    <input type="checkbox" id="cbKerusakan" onchange="toggleDendaKerusakan(this)" style="width:16px;height:16px;">
+    Ada kerusakan buku
+</label>
+</div>
+<div id="dendaKerusakanBox" style="display:none;margin-top:12px;">
+<label style="font-weight:600;font-size:14px;color:#334155;">Nominal Denda Kerusakan (Rp) <span style="color:red">*</span></label>
+<input type="number" name="denda_kerusakan" id="inputDendaKerusakan" min="0" placeholder="Contoh: 50000"
+    style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e2e8f0;font-size:14px;">
+</div>
+<div class="popup-btn">
+<button type="button" class="btn-batal" onclick="closePopupTolak()">Batal</button>
+<button type="submit" style="background:#dc2626;border:none;padding:8px 18px;border-radius:8px;color:white;font-weight:600;cursor:pointer;">Tolak</button>
+</div>
+</form>
 </div>
 </div>
 
@@ -377,8 +421,37 @@ function closePopup(){
 
 // CLOSE POPUP ESC key
 document.addEventListener('keydown', function(e){
-    if(e.key === "Escape"){ closePopup(); }
+    if(e.key === "Escape"){ closePopup(); closePopupTolak(); }
 });
+
+// POPUP TOLAK
+function openPopupTolak(id, nama){
+    document.getElementById('popupTolak').style.display='flex';
+    document.getElementById('tolakNama').innerText = nama;
+    const route = "{{ route('admin.pengembalian.tolak', ':id') }}".replace(':id', id);
+    document.getElementById('formTolak').action = route;
+}
+function closePopupTolak(){
+    document.getElementById('popupTolak').style.display='none';
+    document.getElementById('formTolak').querySelector('textarea').value='';
+    document.getElementById('cbKerusakan').checked = false;
+    document.getElementById('dendaKerusakanBox').style.display = 'none';
+    document.getElementById('inputDendaKerusakan').value = '';
+    document.getElementById('inputDendaKerusakan').removeAttribute('required');
+}
+
+function toggleDendaKerusakan(cb){
+    const box = document.getElementById('dendaKerusakanBox');
+    const input = document.getElementById('inputDendaKerusakan');
+    if(cb.checked){
+        box.style.display = 'block';
+        input.setAttribute('required','required');
+    } else {
+        box.style.display = 'none';
+        input.removeAttribute('required');
+        input.value = '';
+    }
+}
 </script>
 
 @endsection

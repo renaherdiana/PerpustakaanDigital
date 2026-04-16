@@ -115,7 +115,7 @@ background:#3a3d56;
 
 <div class="header-page">
 <h2>Detail Denda</h2>
-<p>Informasi lengkap denda keterlambatan</p>
+<p>Informasi lengkap denda {{ $denda->jenis == 'kerusakan' ? 'kerusakan buku' : 'keterlambatan' }}</p>
 </div>
 
 <div class="container">
@@ -139,9 +139,15 @@ background:#3a3d56;
 @php
 $jumlahBuku = $denda->peminjaman->jumlah ?? 1;
 $hariTerlambat = $denda->hari_terlambat ?? 0;
-$dendaPerBukuPerHari = 1000;
-$totalDenda = $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
+$totalDenda = $denda->denda;
 @endphp
+
+<div class="info-item">
+<span class="info-label">Jenis Denda</span>
+<span class="info-value" style="font-weight:600; color:{{ $denda->jenis == 'kerusakan' ? '#f97316' : '#dc2626' }}">
+    {{ $denda->jenis == 'kerusakan' ? 'Kerusakan Buku' : 'Keterlambatan' }}
+</span>
+</div>
 
 <div class="info-item">
 <span class="info-label">Penulis</span>
@@ -168,10 +174,12 @@ $totalDenda = $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
 <span class="info-value">{{ $jumlahBuku }}</span>
 </div>
 
+@if($denda->jenis == 'terlambat')
 <div class="info-item">
 <span class="info-label">Hari Terlambat</span>
 <span class="info-value">{{ $hariTerlambat }} Hari</span>
 </div>
+@endif
 
 <div class="info-item">
 <span class="info-label">Jumlah Denda</span>

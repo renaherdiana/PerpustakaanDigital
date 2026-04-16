@@ -134,11 +134,8 @@
             $totalLunas    = 0;
             $totalNominal  = 0;
             foreach($dendas as $item) {
-                $terlambat   = $item->denda->hari_terlambat ?? 0;
-                $jumlah      = $item->peminjaman->jumlah ?? 1;
-                $nominal     = $terlambat * $jumlah * 1000;
-                $totalNominal += $nominal;
-                if(($item->denda->status ?? 'menunggu') == 'selesai') $totalLunas++;
+                $totalNominal += $item->denda ?? 0;
+                if($item->status == 'selesai') $totalLunas++;
                 else $totalMenunggu++;
             }
         @endphp
@@ -198,28 +195,28 @@
                 </thead>
                 <tbody>
                     @forelse($dendas as $no => $item)
-                        @php
-                            $terlambat  = $item->denda->hari_terlambat ?? 0;
-                            $jumlah     = $item->peminjaman->jumlah ?? 1;
-                            $nominal    = $terlambat * $jumlah * 1000;
-                            $status     = $item->denda->status ?? 'menunggu';
-                        @endphp
                         <tr>
                             <td>{{ $dendas->firstItem() + $no }}</td>
                             <td><strong>{{ $item->peminjaman->nama_anggota ?? '-' }}</strong></td>
                             <td>{{ $item->peminjaman->buku->judul ?? '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($item->peminjaman->tgl_kembali)->format('d M Y') }}</td>
-                            <td>{{ $terlambat }} hari</td>
-                            <td class="denda-value">Rp {{ number_format($nominal,0,',','.') }}</td>
                             <td>
-                                @if($status == 'selesai')
+                                @if($item->jenis == 'kerusakan')
+                                    <span style="color:#f97316;font-weight:600;">Kerusakan Buku</span>
+                                @else
+                                    {{ $item->hari_terlambat }} hari
+                                @endif
+                            </td>
+                            <td class="denda-value">Rp {{ number_format($item->denda,0,',','.') }}</td>
+                            <td>
+                                @if($item->status == 'selesai')
                                     <span class="badge badge-paid">Lunas</span>
                                 @else
                                     <span class="badge badge-wait">Belum Lunas</span>
                                 @endif
                             </td>
                             <td>
-                                @if($status != 'selesai')
+                                @if($item->status != 'selesai')
                                     <form action="{{ route('admin.denda.bayar', $item->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn-verify">✔ Lunas</button>

@@ -138,10 +138,7 @@ $totalDenda = 0;
 
 @foreach($dendas as $item)
 @php
-$hariTerlambat = $item->hari_terlambat ?? 0;
-$jumlahBuku = $item->peminjaman->jumlah ?? 1;
-$dendaPerBukuPerHari = 1000;
-$totalDenda += $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
+$totalDenda += $item->denda ?? 0;
 @endphp
 @endforeach
 
@@ -177,19 +174,18 @@ Pembayaran denda dilakukan secara <b>CASH</b> di perpustakaan kepada petugas/adm
 <tbody>
 @forelse($dendas as $item)
 
-@php
-$hariTerlambat = $item->hari_terlambat ?? 0;
-$jumlahBuku = $item->peminjaman->jumlah ?? 1;
-$dendaPerBukuPerHari = 1000;
-$totalItemDenda = $hariTerlambat * $jumlahBuku * $dendaPerBukuPerHari;
-@endphp
-
 <tr>
 <td>{{ $dendas->firstItem() + $loop->index }}</td>
 <td>{{ $item->peminjaman->buku->judul ?? '-' }}</td>
-<td>{{ $hariTerlambat }} Hari</td>
-<td>{{ $jumlahBuku }}</td>
-<td>Rp {{ number_format($totalItemDenda,0,',','.') }}</td>
+<td>
+@if($item->jenis == 'kerusakan')
+<span style="color:#f97316;font-weight:600;">Kerusakan Buku</span>
+@else
+{{ $item->hari_terlambat }} Hari
+@endif
+</td>
+<td>{{ $item->peminjaman->jumlah ?? '-' }}</td>
+<td>Rp {{ number_format($item->denda,0,',','.') }}</td>
 <td>
 @if($item->status == 'selesai')
 <span class="status-lunas">Lunas</span>

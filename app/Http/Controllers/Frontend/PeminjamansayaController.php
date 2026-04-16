@@ -26,7 +26,7 @@ class PeminjamansayaController extends Controller
 
 
         // QUERY PEMINJAMAN + RELASI BUKU — filter by anggota login
-        $query = Peminjaman::with('buku')
+        $query = Peminjaman::with(['buku','denda'])
                     ->where('anggota_id', session('anggota_id'));
 
 

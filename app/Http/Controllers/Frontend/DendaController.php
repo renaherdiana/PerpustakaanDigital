@@ -29,10 +29,7 @@ class DendaController extends Controller
                         ->whereHas('peminjaman', function($q){
                             $q->where('anggota_id', session('anggota_id'));
                         })
-                        ->get()
-                        ->sum(function($item){
-                            return $item->hari_terlambat * 1000;
-                        });
+                        ->sum('denda');
 
 
         return view('page.frontend.denda.index', compact('dendas','totalDenda'));

@@ -13,19 +13,11 @@ class DendaController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil query search (opsional)
         $search = $request->input('search');
-
-        // Ambil data pengembalian yang memiliki denda + relasi buku dan peminjaman
-        $dendasQuery = Pengembalian::with([
-            'peminjaman',
-            'peminjaman.buku',
-            'denda'
-        ])->whereHas('denda');
-
         $status = $request->input('status');
 
-        // Filter search
+        $dendasQuery = \App\Models\Denda::with(['peminjaman.buku']);
+
         if ($search) {
             $dendasQuery->whereHas('peminjaman', function($q) use ($search){
                 $q->where('nama_anggota','like',"%{$search}%")
@@ -35,53 +27,28 @@ class DendaController extends Controller
             });
         }
 
-        // Filter status
         if ($status) {
-            $dendasQuery->whereHas('denda', function($q) use ($status){
-                $q->where('status', $status);
-            });
+            $dendasQuery->where('status', $status);
         }
 
-        // Pagination 10 data per halaman
         $dendas = $dendasQuery->latest()->paginate(10)->withQueryString();
 
         return view('page.backend.admin.denda.index', compact('dendas'));
     }
 
-    /**
-     * Verifikasi pembayaran denda (CASH)
-     */
     public function bayar($id)
     {
-        $pengembalian = Pengembalian::with('denda')->findOrFail($id);
-
-        if ($pengembalian->denda) {
-            $pengembalian->denda->update([
-                'status' => 'selesai', // sudah dibayar
-            ]);
-        }
+        $denda = \App\Models\Denda::findOrFail($id);
+        $denda->update(['status' => 'selesai']);
 
         return redirect()->route('admin.denda.index')
                          ->with('success', 'Denda berhasil dibayar secara cash');
     }
 
-    /**
-     * Menampilkan detail denda
-     */
     public function show($id)
     {
-        $pengembalian = Pengembalian::with([
-            'peminjaman',
-            'peminjaman.buku',
-            'denda'
-        ])->findOrFail($id);
+        $denda = \App\Models\Denda::with(['peminjaman.buku'])->findOrFail($id);
 
-        // Hitung total denda untuk tampilan (opsional)
-        $terlambat = $pengembalian->denda->hari_terlambat ?? 0;
-        $jumlahBuku = $pengembalian->peminjaman->jumlah ?? 1;
-        $dendaPerBukuPerHari = 1000;
-        $totalDenda = $terlambat * $jumlahBuku * $dendaPerBukuPerHari;
-
-        return view('page.backend.admin.denda.show', compact('pengembalian','totalDenda'));
+        return view('page.backend.admin.denda.show', compact('denda'));
     }
 }
