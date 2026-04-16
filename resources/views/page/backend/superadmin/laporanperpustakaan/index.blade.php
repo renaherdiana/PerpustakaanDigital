@@ -149,7 +149,7 @@
 <td>
 @php $status = strtolower($item->status ?? 'menunggu'); @endphp
 <span class="badge @if($status=='selesai') badge-paid @elseif($status=='dipinjam') badge-borrow @elseif($status=='menunggu') badge-wait @else badge-default @endif">
-{{ ucwords($status) }}
+{{ ucwords(str_replace('_', ' ', $status)) }}
 </span>
 </td>
 </tr>
@@ -166,7 +166,7 @@
 <td>
 @php $status = strtolower($item->peminjaman->status ?? 'menunggu'); @endphp
 <span class="badge @if($status=='selesai') badge-paid @elseif($status=='dipinjam') badge-borrow @elseif($status=='menunggu') badge-wait @else badge-default @endif">
-{{ ucwords($status) }}
+{{ ucwords(str_replace('_', ' ', $status)) }}
 </span>
 </td>
 </tr>

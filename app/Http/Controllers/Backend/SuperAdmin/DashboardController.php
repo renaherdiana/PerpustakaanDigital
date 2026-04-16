@@ -44,8 +44,8 @@ class DashboardController extends Controller
         }
 
         // Denda tertinggi
-        $dendaTertinggi = Denda::with('peminjaman.buku')
-            ->orderByRaw('hari_terlambat * 1000 DESC')
+        $dendaTertinggi = Denda::with('peminjaman')
+            ->orderBy('denda', 'DESC')
             ->take(5)
             ->get();
 

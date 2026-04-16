@@ -152,9 +152,6 @@
             </thead>
             <tbody>
                 @forelse($dendaTertinggi as $i => $d)
-                @php
-                    $nominal = ($d->hari_terlambat ?? 0) * ($d->peminjaman->jumlah ?? 1) * 1000;
-                @endphp
                 <tr>
                     <td>
                         <span class="rank-badge {{ $i == 0 ? 'rank-1' : ($i == 1 ? 'rank-2' : ($i == 2 ? 'rank-3' : 'rank-other')) }}">
@@ -162,7 +159,7 @@
                         </span>
                     </td>
                     <td>{{ $d->peminjaman->nama_anggota ?? '-' }}</td>
-                    <td class="denda-nominal">Rp {{ number_format($nominal, 0, ',', '.') }}</td>
+                    <td class="denda-nominal">Rp {{ number_format($d->denda, 0, ',', '.') }}</td>
                     <td>
                         @if($d->status == 'selesai')
                             <span class="badge-lunas">Lunas</span>

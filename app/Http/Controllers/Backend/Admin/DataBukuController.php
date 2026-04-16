@@ -119,22 +119,22 @@ class DataBukuController extends Controller
     {
         $buku = Buku::findOrFail($id);
 
-        $sedangDipinjam = $buku->peminjamans()->where('status', 'dipinjam')->exists();
-
+        // Cek sedang dipinjam
+        $sedangDipinjam = $buku->peminjamans()
+            ->whereIn('status', ['dipinjam', 'terlambat', 'menunggu_verifikasi', 'ditolak_pengembalian'])
+            ->exists();
         if ($sedangDipinjam) {
-            return redirect()
-                    ->route('admin.databuku.index')
-                    ->with('error', 'Buku tidak dapat dihapus karena sedang dipinjam.');
+            return redirect()->route('admin.databuku.index')
+                ->with('error', 'Buku tidak dapat dihapus karena masih dalam proses peminjaman.');
         }
 
-        $adaPengembalianBelumVerifikasi = Pengembalian::whereHas('peminjaman', function($q) use ($id) {
-            $q->where('buku_id', $id)->where('status', 'menunggu_verifikasi');
-        })->exists();
-
-        if ($adaPengembalianBelumVerifikasi) {
-            return redirect()
-                    ->route('admin.databuku.index')
-                    ->with('error', 'Buku tidak dapat dihapus karena ada pengembalian yang belum diverifikasi.');
+        // Cek denda belum lunas
+        $adaDendaBelumLunas = \App\Models\Denda::whereHas('peminjaman', function($q) use ($id) {
+            $q->where('buku_id', $id);
+        })->where('status', 'menunggu')->exists();
+        if ($adaDendaBelumLunas) {
+            return redirect()->route('admin.databuku.index')
+                ->with('error', 'Buku tidak dapat dihapus karena masih ada denda yang belum dibayar.');
         }
 
         if($buku->photo){
