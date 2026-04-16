@@ -40,7 +40,7 @@ class DataBukuController extends Controller
 
         $data = $request->validate([
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'judul' => 'required|string|max:255',
+            'judul' => 'required|string|max:255|unique:bukus,judul',
             'penulis' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
@@ -87,7 +87,7 @@ class DataBukuController extends Controller
 
         $data = $request->validate([
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'judul' => 'required|string|max:255',
+            'judul' => 'required|string|max:255|unique:bukus,judul,' . $id,
             'penulis' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',

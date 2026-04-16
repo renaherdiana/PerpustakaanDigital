@@ -118,7 +118,12 @@ margin-top:20px;
 
 <div class="mb-3">
 <label>Judul</label>
-<input type="text" name="judul" class="form-control" value="{{ $buku->judul }}">
+<input type="text" name="judul" class="form-control" value="{{ old('judul', $buku->judul) }}">
+
+@error('judul')
+<div class="error-text">{{ $message }}</div>
+@enderror
+</div>
 </div>
 
 
