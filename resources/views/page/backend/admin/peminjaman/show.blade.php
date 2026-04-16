@@ -187,6 +187,8 @@
             <span class="badge badge-verif">Menunggu Verifikasi</span>
         @elseif($peminjaman->status == 'ditolak')
             <span class="badge badge-reject">Ditolak</span>
+        @elseif($peminjaman->status == 'ditolak_pengembalian')
+            <span class="badge" style="background:#fff7ed;color:#c2410c;">Ditolak Pengembalian</span>
         @elseif($peminjaman->status == 'terlambat')
             <span class="badge badge-late">Terlambat</span>
         @endif
@@ -232,7 +234,7 @@
     </div>
 
     {{-- ALASAN DITOLAK --}}
-    @if($peminjaman->status == 'ditolak' && $peminjaman->alasan_ditolak)
+    @if(($peminjaman->status == 'ditolak' || $peminjaman->status == 'ditolak_pengembalian') && $peminjaman->alasan_ditolak)
     <div style="margin-top:20px; background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; padding:18px 22px; display:flex; gap:14px; align-items:flex-start;">
         <div style="font-size:22px; line-height:1;">🚫</div>
         <div>

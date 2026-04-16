@@ -156,6 +156,7 @@
                     <option value="terlambat" {{ request('status')=='terlambat' ? 'selected' : '' }}>Terlambat</option>
                     <option value="selesai" {{ request('status')=='selesai' ? 'selected' : '' }}>Selesai</option>
                     <option value="ditolak" {{ request('status')=='ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    <option value="ditolak_pengembalian" {{ request('status')=='ditolak_pengembalian' ? 'selected' : '' }}>Ditolak Pengembalian</option>
                 </select>
                 <button type="submit" style="padding:8px 14px; background:#4f7cff; color:white; border:none; border-radius:10px; cursor:pointer;">Cari</button>
             </form>
@@ -197,6 +198,8 @@
                                 <span class="badge badge-done" data-status="selesai">Selesai</span>
                             @elseif($p->status == 'ditolak')
                                 <span class="badge badge-danger" data-status="ditolak">Ditolak</span>
+                            @elseif($p->status == 'ditolak_pengembalian')
+                                <span class="badge" style="background:#fff7ed;color:#c2410c;" data-status="ditolak_pengembalian">Ditolak Pengembalian</span>
                             @endif
                         </td>
                         <td>
