@@ -142,7 +142,11 @@ margin-top:20px;
 
 <div class="mb-3">
 <label>Stok</label>
-<input type="number" name="stok" class="form-control" value="{{ $buku->stok }}">
+<input type="number" name="stok" class="form-control" value="{{ $buku->stok }}" min="0">
+
+@error('stok')
+<div class="error-text">{{ $message }}</div>
+@enderror
 </div>
 
 

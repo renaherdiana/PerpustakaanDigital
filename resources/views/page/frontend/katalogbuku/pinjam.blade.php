@@ -216,7 +216,10 @@ required>
 type="date" 
 name="tgl_pinjam" 
 id="tgl_pinjam"
-class="form-control" 
+class="form-control"
+value="{{ date('Y-m-d') }}"
+readonly
+style="background:#f5f5f5; cursor:not-allowed;"
 required>
 </div>
 
@@ -275,15 +278,10 @@ document.addEventListener("DOMContentLoaded", function(){
 const tglPinjam = document.getElementById('tgl_pinjam');
 const tglKembali = document.getElementById('tgl_kembali');
 
-tglPinjam.addEventListener('change', function(){
-    // min tgl_kembali = 1 hari setelah tgl_pinjam
-    const next = new Date(this.value);
-    next.setDate(next.getDate() + 1);
-    tglKembali.min = next.toISOString().split('T')[0];
-    if(tglKembali.value && tglKembali.value <= this.value){
-        tglKembali.value = '';
-    }
-});
+// set min tgl_kembali = 1 hari setelah hari ini
+const tomorrow = new Date(tglPinjam.value);
+tomorrow.setDate(tomorrow.getDate() + 1);
+tglKembali.min = tomorrow.toISOString().split('T')[0];
 
 @if(session('success'))
 

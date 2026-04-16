@@ -116,8 +116,15 @@ class DataBukuController extends Controller
 
     public function destroy($id)
     {
-
         $buku = Buku::findOrFail($id);
+
+        $sedangDipinjam = $buku->peminjamans()->where('status', 'dipinjam')->exists();
+
+        if ($sedangDipinjam) {
+            return redirect()
+                    ->route('admin.databuku.index')
+                    ->with('error', 'Buku tidak dapat dihapus karena sedang dipinjam.');
+        }
 
         if($buku->photo){
             Storage::disk('public')->delete($buku->photo);

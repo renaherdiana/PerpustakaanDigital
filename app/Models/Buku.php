@@ -29,4 +29,9 @@ class Buku extends Model
             $buku->status = $buku->stok > 0 ? 'Tersedia' : 'Habis';
         });
     }
+
+    public function peminjamans()
+    {
+        return $this->hasMany(Peminjaman::class, 'buku_id');
+    }
 }

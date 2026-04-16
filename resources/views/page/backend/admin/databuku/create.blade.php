@@ -133,7 +133,7 @@ margin-top:4px;
 
 <div class="mb-3">
 <label>Stok</label>
-<input type="number" name="stok" value="{{ old('stok') }}" class="form-control" required>
+<input type="number" name="stok" value="{{ old('stok') }}" class="form-control" min="0" required>
 
 @error('stok')
 <div class="error-text">{{ $message }}</div>
