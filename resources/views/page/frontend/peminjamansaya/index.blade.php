@@ -257,7 +257,7 @@ Ajukan Pengembalian
 @elseif($statusRow=='selesai')
 <a href="{{ route('peminjamansaya.detail',$p->id) }}" class="btn-lihat">Lihat</a>
 @elseif($statusRow=='ditolak')
-<a href="{{ route('peminjamansaya.show',$p->id) }}" class="btn-lihat">Detail</a>
+<a href="{{ route('peminjamansaya.detail',$p->id) }}" class="btn-lihat">Detail</a>
 @endif
 </td>
 </tr>

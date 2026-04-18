@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Buku;
+use App\Models\Pengembalian;
 use Illuminate\Support\Facades\Storage;
 
 class DataBukuController extends Controller
@@ -124,6 +125,16 @@ class DataBukuController extends Controller
             return redirect()
                     ->route('admin.databuku.index')
                     ->with('error', 'Buku tidak dapat dihapus karena sedang dipinjam.');
+        }
+
+        $adaPengembalianBelumVerifikasi = Pengembalian::whereHas('peminjaman', function($q) use ($id) {
+            $q->where('buku_id', $id)->where('status', 'menunggu_verifikasi');
+        })->exists();
+
+        if ($adaPengembalianBelumVerifikasi) {
+            return redirect()
+                    ->route('admin.databuku.index')
+                    ->with('error', 'Buku tidak dapat dihapus karena ada pengembalian yang belum diverifikasi.');
         }
 
         if($buku->photo){
