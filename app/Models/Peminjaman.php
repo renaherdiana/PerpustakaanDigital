@@ -34,7 +34,7 @@ class Peminjaman extends Model
 
     public function denda()
     {
-        return $this->hasOne(Denda::class);
+        return $this->hasMany(Denda::class);
     }
 
     public function anggota()

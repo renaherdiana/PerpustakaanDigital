@@ -221,6 +221,7 @@ $kategoris = $bukus->pluck('kategori')->unique();
                         <th>Penulis</th>
                         <th>Kategori</th>
                         <th>Stok</th>
+                        <th>Harga</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -241,6 +242,7 @@ $kategoris = $bukus->pluck('kategori')->unique();
                             <td>{{ $buku->penulis }}</td>
                             <td>{{ $buku->kategori }}</td>
                             <td>{{ $buku->stok }}</td>
+                            <td>Rp {{ number_format($buku->harga, 0, ',', '.') }}</td>
                             <td>
                                 @if($buku->status == 'Tersedia')
                                     <span class="badge badge-available">Tersedia</span>
@@ -270,7 +272,7 @@ $kategoris = $bukus->pluck('kategori')->unique();
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
+                            <td colspan="9" class="text-center text-muted py-4">
                                 Data Buku Belum Ada
                             </td>
                         </tr>

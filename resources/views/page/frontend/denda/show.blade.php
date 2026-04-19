@@ -115,7 +115,12 @@ background:#3a3d56;
 
 <div class="header-page">
 <h2>Detail Denda</h2>
-<p>Informasi lengkap denda {{ $denda->jenis == 'kerusakan' ? 'kerusakan buku' : 'keterlambatan' }}</p>
+<p>Informasi lengkap denda
+@if($denda->jenis == 'kerusakan') kerusakan buku
+@elseif($denda->jenis == 'hilang') kehilangan buku
+@else keterlambatan
+@endif
+</p>
 </div>
 
 <div class="container">
@@ -145,7 +150,10 @@ $totalDenda = $denda->denda;
 <div class="info-item">
 <span class="info-label">Jenis Denda</span>
 <span class="info-value" style="font-weight:600; color:{{ $denda->jenis == 'kerusakan' ? '#f97316' : '#dc2626' }}">
-    {{ $denda->jenis == 'kerusakan' ? 'Kerusakan Buku' : 'Keterlambatan' }}
+    @if($denda->jenis == 'kerusakan') Kerusakan Buku
+    @elseif($denda->jenis == 'hilang') Buku Hilang
+    @else Keterlambatan
+    @endif
 </span>
 </div>
 

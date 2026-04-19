@@ -232,7 +232,7 @@ $statusRow = $p->status;
 if($p->status == 'dipinjam' && $today->gt($kembali)){
     $statusRow = 'terlambat';
 }
-$hasDendaBelumLunas = $p->denda && $p->denda->status == 'menunggu';
+$hasDendaBelumLunas = $p->denda->where('status', 'menunggu')->isNotEmpty();
 @endphp
 <tr class="table-row"
 data-judul="{{ strtolower(optional($p->buku)->judul ?? '') }}"

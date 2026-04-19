@@ -45,7 +45,8 @@ class DataBukuController extends Controller
             'penulis' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0'
+            'stok' => 'required|integer|min:0',
+            'harga' => 'nullable|integer|min:0'
         ]);
 
         if($request->hasFile('photo')){
@@ -92,7 +93,8 @@ class DataBukuController extends Controller
             'penulis' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0'
+            'stok' => 'required|integer|min:0',
+            'harga' => 'nullable|integer|min:0'
         ]);
 
         if($request->hasFile('photo')){

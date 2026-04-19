@@ -56,7 +56,12 @@ border-radius:10px; text-decoration:none; font-weight:600; font-size:14px; trans
 
 <div class="header-detail">
 <h4>Detail Denda</h4>
-<p>Informasi lengkap denda {{ $denda->jenis == 'kerusakan' ? 'kerusakan buku' : 'keterlambatan pengembalian buku' }}</p>
+<p>Informasi lengkap denda
+@if($denda->jenis == 'kerusakan') kerusakan buku
+@elseif($denda->jenis == 'hilang') kehilangan buku
+@else keterlambatan pengembalian buku
+@endif
+</p>
 </div>
 
 <div class="card card-detail">
@@ -107,7 +112,10 @@ border-radius:10px; text-decoration:none; font-weight:600; font-size:14px; trans
 <div class="info-box">
 <div class="label">Jenis Denda</div>
 <div class="value" style="color:{{ $denda->jenis == 'kerusakan' ? '#f97316' : '#dc2626' }}">
-    {{ $denda->jenis == 'kerusakan' ? 'Kerusakan Buku' : 'Keterlambatan' }}
+    @if($denda->jenis == 'kerusakan') Kerusakan Buku
+    @elseif($denda->jenis == 'hilang') Buku Hilang
+    @else Keterlambatan
+    @endif
 </div>
 </div>
 

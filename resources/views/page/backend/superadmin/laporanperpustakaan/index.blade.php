@@ -60,35 +60,35 @@
         <div class="report-icon">📚</div>
         <div class="report-info">
             <h3>{{ $countBuku }}</h3>
-            <p>Laporan Buku</p>
+            <p>Data Buku</p>
         </div>
     </div>
     <div class="report-card card-pinjam filter-card" data-kategori="peminjaman">
         <div class="report-icon">📖</div>
         <div class="report-info">
             <h3>{{ $countPinjam }}</h3>
-            <p>Laporan Peminjaman</p>
+            <p>Data Peminjaman</p>
         </div>
     </div>
     <div class="report-card card-kembali filter-card" data-kategori="pengembalian">
         <div class="report-icon">🔁</div>
         <div class="report-info">
             <h3>{{ $countKembali }}</h3>
-            <p>Laporan Pengembalian</p>
+            <p>Data Pengembalian</p>
         </div>
     </div>
     <div class="report-card card-denda filter-card" data-kategori="denda">
         <div class="report-icon">💰</div>
         <div class="report-info">
             <h3>{{ $countDenda }}</h3>
-            <p>Laporan Denda</p>
+            <p>Data Denda</p>
         </div>
     </div>
     <div class="report-card card-anggota filter-card" data-kategori="anggota">
         <div class="report-icon">👤</div>
         <div class="report-info">
             <h3>{{ $countAnggota }}</h3>
-            <p>Laporan Anggota</p>
+            <p>Data Anggota</p>
         </div>
     </div>
 </div>
@@ -178,7 +178,7 @@
 <td>{{ $loop->iteration }}</td>
 <td>{{ $item->peminjaman->nama_anggota ?? '-' }}</td>
 <td>{{ $item->peminjaman->jumlah ?? 1 }}</td>
-<td>{{ $item->jenis == 'kerusakan' ? 'Kerusakan Buku' : ($item->hari_terlambat ?? 0).' Hari' }}</td>
+<td>{{ $item->jenis == 'kerusakan' ? 'Kerusakan Buku' : ($item->jenis == 'hilang' ? 'Buku Hilang' : ($item->hari_terlambat ?? 0).' Hari') }}</td>
 <td>Rp {{ number_format($item->denda, 0, ',', '.') }}</td>
 <td>
 @if($item->status == 'selesai')

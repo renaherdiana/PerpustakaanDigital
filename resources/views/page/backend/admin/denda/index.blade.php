@@ -203,6 +203,8 @@
                             <td>
                                 @if($item->jenis == 'kerusakan')
                                     <span style="color:#f97316;font-weight:600;">Kerusakan Buku</span>
+                                @elseif($item->jenis == 'hilang')
+                                    <span style="color:#dc2626;font-weight:600;">Buku Hilang</span>
                                 @else
                                     {{ $item->hari_terlambat }} hari
                                 @endif

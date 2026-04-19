@@ -140,6 +140,15 @@ margin-top:4px;
 @enderror
 </div>
 
+<div class="mb-3">
+<label>Harga</label>
+<input type="number" name="harga" value="{{ old('harga', 0) }}" class="form-control" min="0">
+
+@error('harga')
+<div class="error-text">{{ $message }}</div>
+@enderror
+</div>
+
 
 <div class="d-flex justify-content-end gap-2">
 

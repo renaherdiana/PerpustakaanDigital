@@ -66,9 +66,12 @@ class PengembalianController extends Controller
             'status' => 'selesai'
         ]);
 
-        // tambah stok buku
+        // tambah stok buku — hanya jika tidak ada denda hilang
         $buku = Buku::find($peminjaman->buku_id);
-        if ($buku) {
+        $adaDendaHilang = Denda::where('peminjaman_id', $peminjaman->id)
+            ->where('jenis', 'hilang')
+            ->exists();
+        if ($buku && !$adaDendaHilang) {
             $buku->increment('stok', $peminjaman->jumlah);
             $buku->status = $buku->stok > 0 ? 'Tersedia' : 'Habis';
             $buku->save();
@@ -108,6 +111,7 @@ class PengembalianController extends Controller
         $request->validate([
             'alasan_ditolak' => 'required|string',
             'denda_kerusakan' => 'nullable|integer|min:0',
+            'denda_hilang' => 'nullable|integer|min:0',
         ]);
 
         $pengembalian = Pengembalian::findOrFail($id);
@@ -129,6 +133,18 @@ class PengembalianController extends Controller
                 [
                     'hari_terlambat' => 0,
                     'denda' => $request->denda_kerusakan,
+                    'status' => 'menunggu',
+                ]
+            );
+        }
+
+        // Kalau buku hilang, simpan denda kehilangan
+        if ($request->filled('denda_hilang') && $request->denda_hilang > 0) {
+            Denda::updateOrCreate(
+                ['peminjaman_id' => $peminjaman->id, 'jenis' => 'hilang'],
+                [
+                    'hari_terlambat' => 0,
+                    'denda' => $request->denda_hilang,
                     'status' => 'menunggu',
                 ]
             );

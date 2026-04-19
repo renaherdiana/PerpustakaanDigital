@@ -253,7 +253,7 @@
     <i class="bi bi-check-lg"></i>
 </button>
 <button class="btn-action btn-tolak icon-btn"
-    onclick="openPopupTolak('{{ $data->id }}','{{ $data->peminjaman->nama_anggota }}')"
+    onclick="openPopupTolak('{{ $data->id }}','{{ $data->peminjaman->nama_anggota }}','{{ optional($data->peminjaman->buku)->harga ?? 0 }}')"
     title="Tolak">
     <i class="bi bi-x-lg"></i>
 </button>
@@ -323,6 +323,17 @@
 <div id="dendaKerusakanBox" style="display:none;margin-top:12px;">
 <label style="font-weight:600;font-size:14px;color:#334155;">Nominal Denda Kerusakan (Rp) <span style="color:red">*</span></label>
 <input type="number" name="denda_kerusakan" id="inputDendaKerusakan" min="0" placeholder="Contoh: 50000"
+    style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e2e8f0;font-size:14px;">
+</div>
+<div style="margin-top:14px;">
+<label style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:#334155;cursor:pointer;">
+    <input type="checkbox" id="cbHilang" onchange="toggleDendaHilang(this)" style="width:16px;height:16px;">
+    Buku hilang
+</label>
+</div>
+<div id="dendaHilangBox" style="display:none;margin-top:12px;">
+<label style="font-weight:600;font-size:14px;color:#334155;">Nominal Denda Kehilangan (Rp) <span style="color:red">*</span></label>
+<input type="number" name="denda_hilang" id="inputDendaHilang" min="0"
     style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #e2e8f0;font-size:14px;">
 </div>
 <div class="popup-btn">
@@ -425,7 +436,9 @@ document.addEventListener('keydown', function(e){
 });
 
 // POPUP TOLAK
-function openPopupTolak(id, nama){
+let hargaBukuAktif = 0;
+function openPopupTolak(id, nama, harga){
+    hargaBukuAktif = parseInt(harga) || 0;
     document.getElementById('popupTolak').style.display='flex';
     document.getElementById('tolakNama').innerText = nama;
     const route = "{{ route('admin.pengembalian.tolak', ':id') }}".replace(':id', id);
@@ -438,6 +451,10 @@ function closePopupTolak(){
     document.getElementById('dendaKerusakanBox').style.display = 'none';
     document.getElementById('inputDendaKerusakan').value = '';
     document.getElementById('inputDendaKerusakan').removeAttribute('required');
+    document.getElementById('cbHilang').checked = false;
+    document.getElementById('dendaHilangBox').style.display = 'none';
+    document.getElementById('inputDendaHilang').value = '';
+    document.getElementById('inputDendaHilang').removeAttribute('required');
 }
 
 function toggleDendaKerusakan(cb){
@@ -446,6 +463,20 @@ function toggleDendaKerusakan(cb){
     if(cb.checked){
         box.style.display = 'block';
         input.setAttribute('required','required');
+    } else {
+        box.style.display = 'none';
+        input.removeAttribute('required');
+        input.value = '';
+    }
+}
+
+function toggleDendaHilang(cb){
+    const box = document.getElementById('dendaHilangBox');
+    const input = document.getElementById('inputDendaHilang');
+    if(cb.checked){
+        box.style.display = 'block';
+        input.setAttribute('required','required');
+        input.value = hargaBukuAktif;
     } else {
         box.style.display = 'none';
         input.removeAttribute('required');

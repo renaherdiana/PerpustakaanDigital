@@ -153,6 +153,15 @@ margin-top:20px;
 @enderror
 </div>
 
+<div class="mb-3">
+<label>Harga</label>
+<input type="number" name="harga" class="form-control" value="{{ $buku->harga }}" min="0">
+
+@error('harga')
+<div class="error-text">{{ $message }}</div>
+@enderror
+</div>
+
 
 <div class="btn-area">
 
